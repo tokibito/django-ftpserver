@@ -47,7 +47,7 @@ Documentation
 
 The latest documentation is hosted at Read The Docs.
 
-https://django-ftpserver.readthedocs.orgs/en/latest/
+https://django-ftpserver.readthedocs.org/en/latest/
 
 Develop
 =======
