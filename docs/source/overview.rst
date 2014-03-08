@@ -27,7 +27,13 @@ Getting Started
        'django_ftpserver',
    )
 
-3. Run ``manage.py ftpserver`` command.
+3. syncdb app.
+
+::
+
+   $ python manage.py syncdb
+
+4. Run ``manage.py ftpserver`` command.
 
 ::
 
