@@ -18,9 +18,13 @@ class FTPAccountAuthorizer(object):
         self.uid = os.getuid()
 
     def has_user(self, username):
+        """return True if exists user.
+        """
         return self.model.objects.filter(user__username=username).exists()
 
     def get_account(self, username):
+        """return user by username.
+        """
         try:
             account = self.model.objects.get(user__username=username)
         except self.model.DoesNotExist:
@@ -40,6 +44,8 @@ class FTPAccountAuthorizer(object):
         return account.get_home_dir()
 
     def get_msg_login(self, username):
+        """message for welcome.
+        """
         account = self.get_account(username)
         if account:
             account.update_last_login()

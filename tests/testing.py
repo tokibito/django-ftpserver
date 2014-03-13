@@ -18,3 +18,5 @@ def setup_django():
     from django.db.models.loading import cache as model_cache
     if not model_cache.loaded:
         model_cache._populate()
+        from django.core.management import call_command
+        call_command('syncdb', interactive=False)
