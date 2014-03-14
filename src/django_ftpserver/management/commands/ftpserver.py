@@ -3,8 +3,8 @@ import os
 from optparse import make_option
 
 import pyftpdlib
+from pyftpdlib import handlers
 from pyftpdlib.servers import FTPServer
-from pyftpdlib.handlers import FTPHandler
 
 from django import get_version
 from django.conf import settings
@@ -33,6 +33,12 @@ class Command(BaseCommand):
         make_option('--file-access-user', action='store',
                     dest='file-access-user',
                     help="user for access to file."),
+        make_option('--certfile', action='store',
+                    dest='certfile',
+                    help="TLS certificate file."),
+        make_option('--keyfile', action='store',
+                    dest='keyfile',
+                    help="TLS private key file."),
     )
     args = "[host:port]"
 
@@ -41,7 +47,7 @@ class Command(BaseCommand):
             file_access_user=None, **handler_options):
         return utils.make_server(
             server_class, handler_class, authorizer_class, host_port,
-            file_access_user=None, **handler_options)
+            file_access_user=file_access_user, **handler_options)
 
     def handle(self, *args, **options):
         # bind host and port
@@ -79,6 +85,14 @@ class Command(BaseCommand):
         file_access_user = options['file-access-user'] \
             or utils.get_settings_value('FTPSERVER_FILE_ACCESS_USER')
 
+        # certfile
+        certfile = options['certfile'] \
+            or utils.get_settings_value('FTPSERVER_CERTFILE')
+
+        # keyfile
+        keyfile = options['keyfile'] \
+            or utils.get_settings_value('FTPSERVER_KEYFILE')
+
         # daemonize
         daemonize = options['daemonize'] \
             or utils.get_settings_value('FTPSERVER_DAEMONIZE')
@@ -94,16 +108,28 @@ class Command(BaseCommand):
             with open(pidfile, 'w') as f:
                 f.write(str(os.getpid()))
 
+        # select handler class
+        if certfile or keyfile:
+            if hasattr(handlers, 'TLS_FTPHandler'):
+                handler_class = handlers.TLS_FTPHandler
+            else:
+                # unsupported
+                raise CommandError("Can't import OpenSSL. Please install pyOpenSSL.")
+        else:
+            handler_class = handlers.FTPHandler
+
         # setup server
         server = self.make_server(
             server_class=FTPServer,
-            handler_class=FTPHandler,
+            handler_class=handler_class,
             authorizer_class=FTPAccountAuthorizer,
             host_port=(host, port),
             file_access_user=file_access_user,
             timeout=timeout,
             passive_ports=passive_ports,
-            masquerade_address=masquerade_address)
+            masquerade_address=masquerade_address,
+            certfile=certfile,
+            keyfile=keyfile)
 
         # start server
         quit_command = 'CTRL-BREAK' if sys.platform == 'win32' else 'CONTROL-C'

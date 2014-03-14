@@ -30,11 +30,13 @@ def make_server(
     :host_port: (host, port)
     :file_access_user: 'spam'
 
-    kwargs:
+    handler_options:
 
       * timeout
       * passive_ports
       * masquerade_address
+      * certfile
+      * keyfile
     """
     authorizer = authorizer_class(file_access_user)
     handler = handler_class
