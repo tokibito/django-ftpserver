@@ -114,7 +114,8 @@ class Command(BaseCommand):
                 handler_class = handlers.TLS_FTPHandler
             else:
                 # unsupported
-                raise CommandError("Can't import OpenSSL. Please install pyOpenSSL.")
+                raise CommandError(
+                    "Can't import OpenSSL. Please install pyOpenSSL.")
         else:
             handler_class = handlers.FTPHandler
 
