@@ -58,10 +58,14 @@ class FTPAccountAuthorizer(object):
         return 'good bye.'
 
     def has_perm(self, username, perm, path=None):
+        """check user permission
+        """
         account = self.get_account(username)
         return account and account.has_perm(perm, path)
 
     def get_perms(self, username):
+        """return user permissions
+        """
         account = self.get_account(username)
         return account and account.get_perms()
 
