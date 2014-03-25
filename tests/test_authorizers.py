@@ -88,8 +88,31 @@ class FTPAccountAuthorizerValidateAuthenticationTest(
         self.group.delete()
         self.user.delete()
 
-    def test_get_account(self):
+    def test_validate_authentication(self):
         authorizer = self._getOne()
         self.assertEqual(
             authorizer.validate_authentication('user1', 'password1', None),
             None)
+
+
+class FTPAccountAuthorizerGetHomeDirTest(FTPAccountAuthorizerTestBase):
+    """Test for FTPAccountAuthorizer.get_home_dir
+    """
+
+    def setUp(self):
+        self.user = self._getUser(username='user1')
+        self.user.save()
+        self.group = self._getGroup(name='group1')
+        self.group.save()
+        self.account = self._getAccount(
+            user=self.user, group=self.group, home_dir='/tmp/user1/')
+        self.account.save()
+
+    def tearDown(self):
+        self.account.delete()
+        self.group.delete()
+        self.user.delete()
+
+    def test_get_home_dir(self):
+        authorizer = self._getOne()
+        self.assertEqual(authorizer.get_home_dir('user1'), '/tmp/user1/')
