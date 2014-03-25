@@ -32,6 +32,8 @@ class FTPAccountAuthorizer(object):
         return account
 
     def validate_authentication(self, username, password, handler):
+        """authenticate user with password
+        """
         user = authenticate(username=username, password=password)
         account = self.get_account(username)
         if not (user and account):
@@ -64,6 +66,8 @@ class FTPAccountAuthorizer(object):
         return account and account.get_perms()
 
     def impersonate_user(self, username, password):
+        """impersonate user when operating file system
+        """
         if self.file_access_user:
             uid = pwd.getpwnam(self.file_access_user).pw_uid
             gid = pwd.getpwnam(self.file_access_user).pw_gid
@@ -71,6 +75,8 @@ class FTPAccountAuthorizer(object):
             os.seteuid(uid)
 
     def terminate_impersonation(self, username):
+        """undo user from impersonation
+        """
         if self.file_access_user:
             os.setegid(self.gid)
             os.seteuid(self.uid)
