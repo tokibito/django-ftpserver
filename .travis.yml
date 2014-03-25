@@ -8,8 +8,11 @@ env:
   - TOX_ENV=py27-dj15
   - TOX_ENV=py27-dj16
   - TOX_ENV=py33-dj16
+  - TOX_ENV=py34-dj16
   - TOX_ENV=flake8
 script:
   - tox -e $TOX_ENV
 install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq python3.4-dev
   - pip install tox
