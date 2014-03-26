@@ -10,6 +10,7 @@ env:
   - TOX_ENV=py33-dj16
   - TOX_ENV=py34-dj16
   - TOX_ENV=flake8
+  - TOX_ENV=coverage
 script:
   - tox -e $TOX_ENV
 install:
