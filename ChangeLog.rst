@@ -7,6 +7,7 @@ Change History
 :release-date:
 
 * support TLS (--certfile option)
+* testing on Python 3.4
 
 0.1
 ===

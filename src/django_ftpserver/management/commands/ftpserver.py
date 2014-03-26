@@ -26,7 +26,7 @@ class Command(BaseCommand):
                     help="timeout for remote client."),
         make_option('--passive-ports', action='store',
                     dest='passive-ports',
-                    help="Passive ports."),
+                    help="Passive ports. eg. 12345,30000-50000"),
         make_option('--masquerade-address', action='store',
                     dest='masquerade-address',
                     help="masquerade address."),
