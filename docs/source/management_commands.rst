@@ -31,6 +31,7 @@ For example, it binds to address of 10.0.0.1:21::
    ``--file-access-user=FILE-ACCESS-USER``,user for access to file.
    ``--certfile=CERTFILE``,TLS certificate file.
    ``--keyfile=KEYFILE``,TLS private key file.
+   ``--sendfile``,Use sendfile.
 
 createftpuseraccount
 ====================

@@ -39,6 +39,9 @@ class Command(BaseCommand):
         make_option('--keyfile', action='store',
                     dest='keyfile',
                     help="TLS private key file."),
+        make_option('--sendfile', action='store_true',
+                    dest='sendfile',
+                    help="Use sendfile."),
     )
     args = "[host:port]"
 
@@ -93,6 +96,10 @@ class Command(BaseCommand):
         keyfile = options['keyfile'] \
             or utils.get_settings_value('FTPSERVER_KEYFILE')
 
+        # sendfile
+        sendfile = options['sendfile'] \
+            or utils.get_settings_value('FTPSERVER_SENDFILE')
+
         # daemonize
         daemonize = options['daemonize'] \
             or utils.get_settings_value('FTPSERVER_DAEMONIZE')
@@ -130,7 +137,8 @@ class Command(BaseCommand):
             passive_ports=passive_ports,
             masquerade_address=masquerade_address,
             certfile=certfile,
-            keyfile=keyfile)
+            keyfile=keyfile,
+            sendfile=sendfile)
 
         # start server
         quit_command = 'CTRL-BREAK' if sys.platform == 'win32' else 'CONTROL-C'
