@@ -14,7 +14,7 @@ env:
 script:
   - tox
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq python3.4 python3.4-dev
+  - sudo apt-get update
+  - sudo apt-get install python3.4 python3.4-dev
 install:
   - pip install tox
