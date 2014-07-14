@@ -13,7 +13,8 @@ env:
   - TOXENV=coverage
 script:
   - tox
-install:
+before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq python3.4-dev
+  - sudo apt-get install -qq python3.4 python3.4-dev
+install:
   - pip install tox
