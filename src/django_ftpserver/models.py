@@ -19,7 +19,7 @@ class FTPUserGroup(models.Model):
         _("Home directory"), max_length=1024, null=True, blank=True)
 
     def __str__(self):
-        return "{}".format(self.name)
+        return u"{0}".format(self.name)
 
     class Meta:
         verbose_name = _("FTP user group")
@@ -44,7 +44,7 @@ class FTPUserAccount(models.Model):
             user = self.user
         except ObjectDoesNotExist:
             user = None
-        return "{}".format(user)
+        return u"{0}".format(user)
 
     def get_username(self):
         try:
