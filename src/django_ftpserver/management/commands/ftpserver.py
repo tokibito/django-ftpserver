@@ -101,13 +101,13 @@ class Command(BaseCommand):
             or utils.get_settings_value('FTPSERVER_SENDFILE')
             
         # custom handler
-        custom_handler = utils.get_settings_value('FTPSERVER_CUSTOM_HANDLER')
+        custom_handler = utils.get_ftp_handler(utils.get_settings_value('FTPSERVER_CUSTOM_HANDLER'))
 
         if custom_handler == None:
             custom_handler = handlers.FTPHandler
             
         # custom tls handler
-        custom_tls_handler = utils.get_settings_value('FTPSERVER_CUSTOM_TLS_HANDLER')
+        custom_tls_handler = utils.get_ftp_handler(utils.get_settings_value('FTPSERVER_CUSTOM_TLS_HANDLER'))
 
         if custom_tls_handler == None:
             custom_tls_handler = handlers.TLS_FTPHandler

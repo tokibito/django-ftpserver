@@ -44,3 +44,17 @@ def make_server(
         setattr(handler, key, value)
     handler.authorizer = authorizer
     return server_class(host_port, handler)
+    
+def get_ftp_handler(handler):
+    """
+    Custom handler if include models and import in settings, 
+    problem for django...
+    """
+    if handler == None:
+        return None
+        
+    base_dir = getattr(settings, 'BASE_DIR', None)
+    module = __import__(handler.rsplit('.', 1)[0], fromlist=[base_dir])
+    print module
+    class_ = getattr(module, handler.rsplit('.', 1)[1], None)
+    return class_
