@@ -99,7 +99,19 @@ class Command(BaseCommand):
         # sendfile
         sendfile = options['sendfile'] \
             or utils.get_settings_value('FTPSERVER_SENDFILE')
+            
+        # custom handler
+        custom_handler = utils.get_ftp_handler(utils.get_settings_value('FTPSERVER_CUSTOM_HANDLER'))
 
+        if custom_handler == None:
+            custom_handler = handlers.FTPHandler
+            
+        # custom tls handler
+        custom_tls_handler = utils.get_ftp_handler(utils.get_settings_value('FTPSERVER_CUSTOM_TLS_HANDLER'))
+
+        if custom_tls_handler == None:
+            custom_tls_handler = handlers.TLS_FTPHandler
+            
         # daemonize
         daemonize = options['daemonize'] \
             or utils.get_settings_value('FTPSERVER_DAEMONIZE')
@@ -118,13 +130,13 @@ class Command(BaseCommand):
         # select handler class
         if certfile or keyfile:
             if hasattr(handlers, 'TLS_FTPHandler'):
-                handler_class = handlers.TLS_FTPHandler
+                handler_class = custom_tls_handler #handlers.TLS_FTPHandler
             else:
                 # unsupported
                 raise CommandError(
                     "Can't import OpenSSL. Please install pyOpenSSL.")
         else:
-            handler_class = handlers.FTPHandler
+            handler_class = custom_handler #handlers.FTPHandler
 
         # setup server
         server = self.make_server(
