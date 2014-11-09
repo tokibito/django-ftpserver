@@ -24,11 +24,11 @@ Getting Started
        'django_ftpserver',
    )
 
-3. syncdb app.
+3. migrate or syncdb(Django<1.7) app.
 
 ::
 
-   $ python manage.py syncdb
+   $ python manage.py migrate
 
 4. Run ``manage.py ftpserver`` command.
 
