@@ -59,11 +59,11 @@ class FTPUserAccount(models.Model):
     def get_home_dir(self):
         if self.home_dir:
             directory = self.home_dir
-        elif self.group:
+        elif self.group and self.group.home_dir:
             directory = self.group.home_dir
         else:
             directory = os.path.join(
-                os.path.dirname(os.path.expanduser('~')), '{username}')
+                os.path.dirname(os.path.expanduser('~')), u'{username}')
         return directory.format(username=self.get_username())
 
     def has_perm(self, perm, path):

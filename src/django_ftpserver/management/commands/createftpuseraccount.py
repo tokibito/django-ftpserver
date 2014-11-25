@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 'FTP user group "{name}" is not exists.'.fomat(
                     name=group_name))
 
-        account = models.FTPUserAccount.create(
+        account = models.FTPUserAccount.objects.create(
             user=user, group=group, home_dir=home_dir)
 
         sys.stdout.write(
