@@ -1,21 +1,14 @@
 import sys
 
-from django import get_version
 from django.core.management.base import BaseCommand, CommandError
 
 from django_ftpserver import models
+from django_ftpserver.compat import get_user_model, get_username_field
 
 
 class Command(BaseCommand):
     help = "Create FTP user account"
     args = "username group [home_dir]"
-
-    def get_user_model(self):
-        if get_version() >= '1.5':
-            from django.contrib.auth import get_user_model
-            return get_user_model()
-        from django.contrib.auth.models import User
-        return User
 
     def handle(self, *args, **options):
         if len(args) < 2:
@@ -33,10 +26,10 @@ class Command(BaseCommand):
                 'FTP user account "{username}" is already exists.'.format(
                     username=username))
 
-        user_model = self.get_user_model()
+        User = get_user_model()
         try:
-            user = user_model.objects.get(username=username)
-        except user_model.DoesNotExist:
+            user = User.objects.get(**{get_username_field(): username})
+        except User.DoesNotExist:
             raise CommandError(
                 'User "{username}" is not exists.'.fomat(username=username))
 

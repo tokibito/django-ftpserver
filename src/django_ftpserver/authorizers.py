@@ -5,6 +5,7 @@ from django.core import exceptions
 from pyftpdlib.authorizers import AuthenticationFailed
 
 from . import models
+from .compat import get_username_field
 
 personate_user_class = None
 
@@ -80,17 +81,25 @@ class FTPAccountAuthorizer(personate_user_class):
 
     def __init__(self, file_access_user=None):
         super(FTPAccountAuthorizer, self).__init__(file_access_user)
+        self.username_field = get_username_field()
+
+    def _filter_user_by(self, username):
+        return {"user__%s" % self.username_field: username}
 
     def has_user(self, username):
         """return True if exists user.
         """
-        return self.model.objects.filter(user__username=username).exists()
+        return self.model.objects.filter(
+            **self._filter_user_by(username)
+        ).exists()
 
     def get_account(self, username):
         """return user by username.
         """
         try:
-            account = self.model.objects.get(user__username=username)
+            account = self.model.objects.get(
+                **self._filter_user_by(username)
+            )
         except self.model.DoesNotExist:
             return None
         return account
@@ -98,7 +107,9 @@ class FTPAccountAuthorizer(personate_user_class):
     def validate_authentication(self, username, password, handler):
         """authenticate user with password
         """
-        user = authenticate(username=username, password=password)
+        user = authenticate(
+            **{self.username_field: username, 'password': password}
+        )
         account = self.get_account(username)
         if not (user and account):
             raise AuthenticationFailed("Authentication failed.")
