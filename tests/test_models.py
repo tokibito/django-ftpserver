@@ -1,5 +1,4 @@
-from unittest import TestCase
-
+from django.test import TestCase
 from django.utils import timezone
 
 
@@ -15,7 +14,7 @@ class UserAccountTest(TestCase):
 
     def _getUser(self):
         from django.contrib.auth import models
-        return models.User()
+        return models.User.objects.create()
 
     def test_update_last_login(self):
         account = self._getOne()
@@ -51,7 +50,7 @@ class UserAccountTest(TestCase):
 class UserAccountWithGroupTest(TestCase):
     def _getGroup(self):
         from django_ftpserver import models
-        return models.FTPUserGroup()
+        return models.FTPUserGroup.objects.create()
 
     def _getOne(self):
         from django_ftpserver import models
