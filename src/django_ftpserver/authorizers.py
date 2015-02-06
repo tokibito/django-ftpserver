@@ -27,7 +27,8 @@ class FTPAccountAuthorizer(object):
     def __init__(self, file_access_user=None):
         self.username_field = get_username_field()
         if file_access_user:
-            personate_user_class = self.personate_user_class or _get_personate_user_class()
+            personate_user_class = (
+                self.personate_user_class or _get_personate_user_class())
             self.personate_user = personate_user_class(file_access_user)
         else:
             self.personate_user = None
