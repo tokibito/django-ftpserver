@@ -1,87 +1,36 @@
 import os
 
 from django.contrib.auth import authenticate
-from django.core import exceptions
 from pyftpdlib.authorizers import AuthenticationFailed
 
 from . import models
 from .compat import get_username_field
 
-personate_user_class = None
 
-try:
-    import pwd
-except ImportError:
-    pass
-else:
-    class UnixPersonateUser(object):
-        def __init__(self, file_access_user):
-            self.file_access_user = file_access_user
-            self.gid = os.getgid()
-            self.uid = os.getuid()
-
-        def impersonate_user(self, username, password):
-            """impersonate user when operating file system
-            """
-            if self.file_access_user:
-                uid = pwd.getpwnam(self.file_access_user).pw_uid
-                gid = pwd.getpwnam(self.file_access_user).pw_gid
-                os.setegid(gid)
-                os.seteuid(uid)
-
-        def terminate_impersonation(self, username):
-            """undo user from impersonation
-            """
-            if self.file_access_user:
-                os.setegid(self.gid)
-                os.seteuid(self.uid)
-
-    personate_user_class = UnixPersonateUser
-
-try:
-    import win32con
-    import win32security
-except ImportError:
-    pass
-else:
-    class WindowsPersonateUser(object):
-        def __init__(self, file_access_user):
-            self.file_access_user = file_access_user
-
-        def impersonate_user(self, username, password):
-            """impersonate user when operating file system
-            """
-            if self.file_access_user:
-                handler = win32security.LogonUser(
-                    username, None, password,
-                    win32con.LOGON32_LOGON_INTERACTIVE,
-                    win32con.LOGON32_PROVIDER_DEFAULT)
-                win32security.ImpersonateLoggedOnUser(handler)
-                handler.Close()
-
-        def terminate_impersonation(self, username):
-            """undo user from impersonation
-            """
-            if self.file_access_user:
-                win32security.RevertToSelf()
-
-    personate_user_class = WindowsPersonateUser
+def _get_personate_user_class():
+    """return personate user class
+    """
+    if os.name == 'nt':
+        from . import _windows
+        return _windows.WindowsPersonateUser
+    else:
+        from . import _unix
+        return _unix.UnixPersonateUser
 
 
-if personate_user_class is None:
-    raise exceptions.ImproperlyConfigured(
-        "It can't setup the personate user class. "
-        "If your platform is Windows, please install pywin32.")
-
-
-class FTPAccountAuthorizer(personate_user_class):
+class FTPAccountAuthorizer(object):
     """Authorizer class by django authentication.
     """
     model = models.FTPUserAccount
+    personate_user_class = None
 
     def __init__(self, file_access_user=None):
-        super(FTPAccountAuthorizer, self).__init__(file_access_user)
         self.username_field = get_username_field()
+        if file_access_user:
+            personate_user_class = self.personate_user_class or _get_personate_user_class()
+            self.personate_user = personate_user_class(file_access_user)
+        else:
+            self.personate_user = None
 
     def _filter_user_by(self, username):
         return {"user__%s" % self.username_field: username}
@@ -143,3 +92,15 @@ class FTPAccountAuthorizer(personate_user_class):
         """
         account = self.get_account(username)
         return account and account.get_perms()
+
+    def impersonate_user(self, username, password):
+        """delegate to personate_user method
+        """
+        if self.personate_user:
+            self.personate_user.impersonate_user(username, password)
+
+    def terminate_impersonation(self, username):
+        """delegate to terminate_impersonation method
+        """
+        if self.personate_user:
+            self.personate_user.terminate_impersonation(username)
