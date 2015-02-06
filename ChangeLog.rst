@@ -2,6 +2,12 @@
 Change History
 ==============
 
+0.3.1
+=====
+:release-date: 2015-03-29
+
+* small refactoring
+
 0.3
 ===
 :release-date: 2015-2-12
