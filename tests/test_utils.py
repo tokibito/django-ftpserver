@@ -1,11 +1,6 @@
 from unittest import TestCase
 
 
-def setUpModule():
-    from . import testing
-    testing.setup_django()
-
-
 class GetSettingsValueTest(TestCase):
     def _callFUT(self, name):
         from django_ftpserver.utils import get_settings_value

@@ -1,11 +1,6 @@
 from unittest import TestCase
 
 
-def setUpModule():
-    from . import testing
-    testing.setup_django()
-
-
 class FTPAccountAuthorizerTestBase(TestCase):
     def _getUser(self, **kwargs):
         from django.contrib.auth import models

@@ -1,10 +1,5 @@
-from django.test import TestCase
 from django.utils import timezone
-
-
-def setUpModule():
-    from . import testing
-    testing.setup_django()
+from django.test import TestCase
 
 
 class UserAccountTest(TestCase):
