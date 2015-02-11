@@ -4,9 +4,12 @@ Change History
 
 0.3
 ===
-:release-date:
+:release-date: 2015-2-12
 
 * support sendfile (--sendfile option)
+* fixes #5 support custom User username field
+* fixes #4 support Windows platform
+* fixes #1 model string format
 
 0.2
 ===
