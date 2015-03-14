@@ -31,13 +31,13 @@ class Command(BaseCommand):
             user = User.objects.get(**{get_username_field(): username})
         except User.DoesNotExist:
             raise CommandError(
-                'User "{username}" is not exists.'.fomat(username=username))
+                'User "{username}" is not exists.'.format(username=username))
 
         try:
             group = models.FTPUserGroup.objects.get(name=group_name)
         except models.FTPUserGroup.DoesNotExist:
             raise CommandError(
-                'FTP user group "{name}" is not exists.'.fomat(
+                'FTP user group "{name}" is not exists.'.format(
                     name=group_name))
 
         account = models.FTPUserAccount.objects.create(
