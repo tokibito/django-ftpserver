@@ -11,6 +11,7 @@ Contents:
 
    overview
    management_commands
+   custom_handlers_authorizers
    reference/index
 
 Indices and tables
