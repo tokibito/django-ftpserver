@@ -2,6 +2,12 @@
 Change History
 ==============
 
+0.3.2
+=====
+:release-date: 2015-10-02
+
+* #7 support Custom Authorizer and Handler classes via settings
+
 0.3.1
 =====
 :release-date: 2015-03-29

@@ -118,13 +118,17 @@ class Command(BaseCommand):
         # select handler class
         if certfile or keyfile:
             if hasattr(handlers, 'TLS_FTPHandler'):
-                handler_class = utils.get_settings_value('FTPSERVER_TLSHANDLER') or handlers.TLS_FTPHandler
+                handler_class = (
+                    utils.get_settings_value('FTPSERVER_TLSHANDLER')
+                ) or handlers.TLS_FTPHandler
             else:
                 # unsupported
                 raise CommandError(
                     "Can't import OpenSSL. Please install pyOpenSSL.")
         else:
-            handler_class = utils.get_settings_value('FTPSERVER_HANDLER') or handlers.FTPHandler
+            handler_class = (
+                utils.get_settings_value('FTPSERVER_HANDLER')
+            ) or handlers.FTPHandler
 
         authorizer_class = utils.get_settings_value('FTPSERVER_AUTHORIZER') \
             or FTPAccountAuthorizer
