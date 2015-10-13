@@ -23,7 +23,7 @@ def setup_django():
         if not apps.ready:
             apps.populate(settings.INSTALLED_APPS)
             from django.core.management import call_command
-            call_command('syncdb', interactive=False)
+            call_command('migrate', interactive=False)
     else:
         from django.db.models.loading import cache as model_cache
         if not model_cache.loaded:

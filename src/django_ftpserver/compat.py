@@ -27,3 +27,9 @@ def get_username_field():
         return getattr(UserModel, 'USERNAME_FIELD', 'username')
     else:
         return 'username'
+
+
+try:
+    string_type = basestring
+except NameError:
+    string_type = str

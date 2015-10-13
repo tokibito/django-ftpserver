@@ -13,6 +13,7 @@ Contents:
    management_commands
    custom_handlers_authorizers
    reference/index
+   ChangeLog
 
 Indices and tables
 ==================

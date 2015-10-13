@@ -1,11 +1,5 @@
 from django.conf import settings
 
-# compatability
-try:
-    basestring
-except NameError:
-    basestring = str
-
 
 def get_settings_value(name):
     """Return the django settings value for name attribute
@@ -53,10 +47,11 @@ def make_server(
       * certfile
       * keyfile
     """
-    if isinstance(handler_class, basestring):
+    from . import compat
+    if isinstance(handler_class, compat.string_type):
         handler_class = import_class(handler_class)
 
-    if isinstance(authorizer_class, basestring):
+    if isinstance(authorizer_class, compat.string_type):
         authorizer_class = import_class(authorizer_class)
 
     authorizer = authorizer_class(file_access_user)

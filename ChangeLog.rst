@@ -2,6 +2,12 @@
 Change History
 ==============
 
+0.3.3
+=====
+:release-date: 2015-10-14
+
+* #9 Fix for python3 in utils
+
 0.3.2
 =====
 :release-date: 2015-10-02
