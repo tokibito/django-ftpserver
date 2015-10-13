@@ -1,5 +1,11 @@
 from django.conf import settings
 
+# compatability
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 def get_settings_value(name):
     """Return the django settings value for name attribute
