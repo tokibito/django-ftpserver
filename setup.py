@@ -25,7 +25,7 @@ setup(
     url='https://github.com/tokibito/django-ftpserver',
     install_requires=['Django>=1.4', 'pyftpdlib'],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
