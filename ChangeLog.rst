@@ -2,6 +2,12 @@
 Change History
 ==============
 
+0.3.4
+=====
+:release-date:
+
+* add tox env for Django 1.9 and Python 3.5
+
 0.3.3
 =====
 :release-date: 2015-10-14

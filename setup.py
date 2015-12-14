@@ -15,7 +15,7 @@ def read(filename):
 
 setup(
     name='django-ftpserver',
-    version='0.3.3',
+    version='0.3.4',
     description="FTP server application for Django.",
     long_description=read('README.rst'),
     package_dir={'': 'src'},
@@ -31,5 +31,6 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'License :: OSI Approved :: MIT License',
     ])

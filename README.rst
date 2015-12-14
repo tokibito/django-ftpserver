@@ -24,7 +24,7 @@ Getting Started
        'django_ftpserver',
    )
 
-3. migrate or syncdb(Django<1.7) app.
+3. migrate(Django>=1.7) or syncdb(Django<1.7) app.
 
 ::
 
@@ -39,7 +39,7 @@ Getting Started
 Requirements
 ============
 
-* Target Python version is 2.6, 2.7, 3.3, 3.4.
+* Target Python version is 2.6, 2.7, 3.3, 3.4 and 3.5.
 * Django>=1.4
 * pyftpdlib
 
