@@ -4,7 +4,7 @@ Change History
 
 0.3.4
 =====
-:release-date:
+:release-date: 2015-12-15
 
 * add tox env for Django 1.9 and Python 3.5
 
