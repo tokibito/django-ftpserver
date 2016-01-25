@@ -9,9 +9,9 @@ from pyftpdlib.servers import FTPServer
 from django import get_version
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.daemonize import become_daemon
 
 from django_ftpserver.authorizers import FTPAccountAuthorizer
+from django_ftpserver.compat import become_daemon
 from django_ftpserver import utils
 
 
