@@ -2,6 +2,12 @@
 Change History
 ==============
 
+0.3.5
+=====
+:release-date: 2016-01-26
+
+* #10 Fix daemonize problem in Django 1.9
+
 0.3.4
 =====
 :release-date: 2015-12-15
