@@ -1,5 +1,4 @@
 import sys
-from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 
@@ -8,10 +7,11 @@ from django_ftpserver import models
 
 class Command(BaseCommand):
     help = "Create FTP user group"
-    option_list = BaseCommand.option_list + (
-        make_option('--permission', action='store', dest='permission',
-                    help="permission for home directory."),)
     args = "name [home_dir]"
+
+    def add_arguments(self, parser):
+        parser.add_argument('--permission', action='store', dest='permission',
+                    help="permission for home directory.")
 
     def handle(self, *args, **options):
         if len(args) < 1:

@@ -1,6 +1,5 @@
 import sys
 import os
-from optparse import make_option
 
 import pyftpdlib
 from pyftpdlib import handlers
@@ -17,33 +16,42 @@ from django_ftpserver import utils
 
 class Command(BaseCommand):
     help = "Start FTP server"
-    option_list = BaseCommand.option_list + (
-        make_option('--daemonize', action='store_true', dest='daemonize',
-                    help="become background service."),
-        make_option('--pidfile', action='store', dest='pidfile',
-                    help="filename to write process id (PID)."),
-        make_option('--timeout', action='store', dest='timeout', type=int,
-                    help="timeout for remote client."),
-        make_option('--passive-ports', action='store',
-                    dest='passive-ports',
-                    help="Passive ports. eg. 12345,30000-50000"),
-        make_option('--masquerade-address', action='store',
-                    dest='masquerade-address',
-                    help="masquerade address."),
-        make_option('--file-access-user', action='store',
-                    dest='file-access-user',
-                    help="user for access to file."),
-        make_option('--certfile', action='store',
-                    dest='certfile',
-                    help="TLS certificate file."),
-        make_option('--keyfile', action='store',
-                    dest='keyfile',
-                    help="TLS private key file."),
-        make_option('--sendfile', action='store_true',
-                    dest='sendfile',
-                    help="Use sendfile."),
-    )
     args = "[host:port]"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--daemonize', action='store_true', dest='daemonize',
+            help="become background service.")
+        parser.add_argument(
+            '--pidfile', action='store', dest='pidfile',
+            help="filename to write process id (PID).")
+        parser.add_argument(
+            '--timeout', action='store', dest='timeout', type=int,
+            help="timeout for remote client.")
+        parser.add_argument(
+            '--passive-ports', action='store',
+            dest='passive-ports',
+            help="Passive ports. eg. 12345,30000-50000")
+        parser.add_argument(
+            '--masquerade-address', action='store',
+            dest='masquerade-address',
+            help="masquerade address.")
+        parser.add_argument(
+            '--file-access-user', action='store',
+            dest='file-access-user',
+            help="user for access to file.")
+        parser.add_argument(
+            '--certfile', action='store',
+            dest='certfile',
+            help="TLS certificate file.")
+        parser.add_argument(
+            '--keyfile', action='store',
+            dest='keyfile',
+            help="TLS private key file.")
+        parser.add_argument(
+            '--sendfile', action='store_true',
+            dest='sendfile',
+            help="Use sendfile.")
 
     def make_server(
             self, server_class, handler_class, authorizer_class, host_port,
