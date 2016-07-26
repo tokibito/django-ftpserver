@@ -7,21 +7,18 @@ from django_ftpserver import models
 
 class Command(BaseCommand):
     help = "Create FTP user group"
-    args = "name [home_dir]"
 
     def add_arguments(self, parser):
+        parser.add_argument('name', nargs='+')
+        parser.add_argument('home_dir', nargs='?')
+
         parser.add_argument(
             '--permission', action='store', dest='permission',
             help="permission for home directory.")
 
     def handle(self, *args, **options):
-        if len(args) < 1:
-            raise CommandError("Enter one group name.")
-        name = args[0]
-        if len(args) > 1:
-            home_dir = args[1]
-        else:
-            home_dir = None
+        name = options.get('name')
+        home_dir = options.get('home_dir')
 
         if models.FTPUserGroup.objects.filter(name=name).exists():
             raise CommandError(
