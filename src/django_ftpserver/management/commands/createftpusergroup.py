@@ -10,8 +10,9 @@ class Command(BaseCommand):
     args = "name [home_dir]"
 
     def add_arguments(self, parser):
-        parser.add_argument('--permission', action='store', dest='permission',
-                    help="permission for home directory.")
+        parser.add_argument(
+            '--permission', action='store', dest='permission',
+            help="permission for home directory.")
 
     def handle(self, *args, **options):
         if len(args) < 1:

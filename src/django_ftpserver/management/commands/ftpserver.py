@@ -16,9 +16,10 @@ from django_ftpserver import utils
 
 class Command(BaseCommand):
     help = "Start FTP server"
-    args = "[host:port]"
 
     def add_arguments(self, parser):
+        parser.add_argument('host_port', nargs="?")
+
         parser.add_argument(
             '--daemonize', action='store_true', dest='daemonize',
             help="become background service.")
@@ -62,10 +63,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # bind host and port
-        if len(args) > 0:
-            host_port = args[0]
-        else:
-            host_port = None
+        host_port = options.get('host_port')
         if host_port:
             host, _port = host_port.split(':', 1)
             port = int(_port)
