@@ -2,6 +2,13 @@
 Change History
 ==============
 
+0.4.0
+=====
+:release-date: 2016-09-16
+
+* WIP: Added django 1.10 support #12
+* Removed older Python(2.6, 3.3) and Django(<1.8) support
+
 0.3.5
 =====
 :release-date: 2016-01-26
