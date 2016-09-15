@@ -8,17 +8,16 @@ from django_ftpserver.compat import get_user_model, get_username_field
 
 class Command(BaseCommand):
     help = "Create FTP user account"
-    args = "username group [home_dir]"
+
+    def add_arguments(self, parser):
+        parser.add_argument('username', nargs='+')
+        parser.add_argument('group', nargs='+')
+        parser.add_argument('home_dir', nargs='?')
 
     def handle(self, *args, **options):
-        if len(args) < 2:
-            raise CommandError("Enter the username and group name.")
-        username = args[0]
-        group_name = args[1]
-        if len(args) > 2:
-            home_dir = args[2]
-        else:
-            home_dir = None
+        username = options.get('username')
+        group_name = options.get('group')
+        home_dir = options.get('home_dir')
 
         if models.FTPUserAccount.objects.filter(
                 user__username=username).exists():
