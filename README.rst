@@ -24,7 +24,7 @@ Getting Started
        'django_ftpserver',
    )
 
-3. migrate(Django>=1.7) or syncdb(Django<1.7) app.
+3. migrate app.
 
 ::
 

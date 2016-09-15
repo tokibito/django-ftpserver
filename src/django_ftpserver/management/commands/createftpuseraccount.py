@@ -1,9 +1,10 @@
 import sys
 
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth import get_user_model
 
 from django_ftpserver import models
-from django_ftpserver.compat import get_user_model, get_username_field
+from django_ftpserver.compat import get_username_field
 
 
 class Command(BaseCommand):
