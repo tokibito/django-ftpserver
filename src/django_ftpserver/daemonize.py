@@ -6,7 +6,7 @@ https://github.com/django/django/blob/stable/1.8.x/django/utils/daemonize.py
 import os
 import sys
 
-from . import six
+import six
 
 buffering = int(six.PY3)        # No unbuffered text I/O on Python 3 (#20815).
 
