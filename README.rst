@@ -24,24 +24,41 @@ Getting Started
        'django_ftpserver',
    )
 
-3. migrate app.
+3. Migrate app.
 
 ::
 
    $ python manage.py migrate
 
-4. Run ``manage.py ftpserver`` command.
+4. Create FTP user group.
+
+::
+
+   $ python manage.py createftpusergroup my-ftp-group
+
+5. Create FTP user account.
+
+::
+
+   $ python manage.py createftpuseraccount <username> my-ftp-group
+
+``<username>`` is the django authentication username.
+
+6. Run ``manage.py ftpserver`` command.
 
 ::
 
    $ python manage.py ftpserver 127.0.0.1:10021
 
+7. Connect with your favorite FTP client.
+
 Requirements
 ============
 
-* Target Python version is 2.7, 3.4 and 3.5.
+* Target Python version is 2.7, 3.4, 3.5 and 3.6.
 * Django>=1.8
 * pyftpdlib
+* six
 
 License
 =======
