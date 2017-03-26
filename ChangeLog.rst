@@ -6,22 +6,28 @@ Change History
 =====
 :release-date: 2017-03-27
 
-* Update daemonize.py #13
+* Update daemonize.py `#13`_
 * Add six module to install_require
 * Added Python 3.6 support
+
+.. _#13: https://github.com/tokibito/django-ftpserver/pull/13
 
 0.4.0
 =====
 :release-date: 2016-09-16
 
-* WIP: Added django 1.10 support #12
+* WIP: Added django 1.10 support `#12`_
 * Removed older Python(2.6, 3.3) and Django(<1.8) support
+
+.. _#12: https://github.com/tokibito/django-ftpserver/pull/12
 
 0.3.5
 =====
 :release-date: 2016-01-26
 
-* #10 Fix daemonize problem in Django 1.9
+* Fix daemonize problem in Django 1.9 `#10`_
+
+.. _#10: https://github.com/tokibito/django-ftpserver/issues/10
 
 0.3.4
 =====
