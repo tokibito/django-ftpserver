@@ -23,7 +23,7 @@ setup(
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
-    install_requires=['Django>=1.8', 'pyftpdlib'],
+    install_requires=['Django>=1.8', 'pyftpdlib', 'six'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',

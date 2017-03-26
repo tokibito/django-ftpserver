@@ -10,6 +10,7 @@ env:
   - TOXENV=py34-dj110
   - TOXENV=py35-dj19
   - TOXENV=py35-dj110
+  - TOXENV=py36-dj110
   - TOXENV=flake8
   - TOXENV=coverage
 script:
