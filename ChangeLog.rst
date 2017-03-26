@@ -2,6 +2,14 @@
 Change History
 ==============
 
+0.4.1
+=====
+:release-date: 2017-03-27
+
+* Update daemonize.py #13
+* Add six module to install_require
+* Added Python 3.6 support
+
 0.4.0
 =====
 :release-date: 2016-09-16
