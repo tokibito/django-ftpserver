@@ -11,8 +11,8 @@ class Command(BaseCommand):
     help = "Create FTP user account"
 
     def add_arguments(self, parser):
-        parser.add_argument('username', nargs='+')
-        parser.add_argument('group', nargs='+')
+        parser.add_argument('username')
+        parser.add_argument('group')
         parser.add_argument('home_dir', nargs='?')
 
     def handle(self, *args, **options):

@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = "Create FTP user group"
 
     def add_arguments(self, parser):
-        parser.add_argument('name', nargs='+')
+        parser.add_argument('name')
         parser.add_argument('home_dir', nargs='?')
 
         parser.add_argument(
