@@ -1,3 +1,4 @@
+import logging
 import time
 import os
 from collections import namedtuple
@@ -9,6 +10,8 @@ from django.core.files.storage import (
     get_storage_class as _get_storage_class
 )
 
+logger = logging.getLogger(__name__)
+
 PseudoStat = namedtuple(
     'PseudoStat',
     [
@@ -17,14 +20,58 @@ PseudoStat = namedtuple(
     ])
 
 
+class StoragePatch:
+    patch_methods = ()
+
+    @classmethod
+    def apply(cls, fs):
+        """replace bound methods of fs.
+        """
+        logger.debug(
+            'Patching %s with %s.', fs.__class__.__name__, cls.__name__)
+        fs._patch = cls
+        for method_name in cls.patch_methods:
+            # if fs hasn't method, raise AttributeError.
+            if getattr(fs, method_name):
+                method = getattr(cls, method_name)
+                bound_method = method.__get__(fs, fs.__class__)
+                setattr(fs, method_name, bound_method)
+
+
+class FileSystemStoragePatch(StoragePatch):
+    patch_methods = (
+        'mkdir', 'rmdir', 'stat',
+    )
+
+    def mkdir(self, path):
+        os.mkdir(self.storage.path(path))
+
+    def rmdir(self, path):
+        os.rmdir(self.storage.path(path))
+
+    def stat(self, path):
+        return os.stat(self.storage.path(path))
+
+
 class StorageFS(AbstractedFS):
     """FileSystem for bridge to Django storage.
     """
     storage_class = None
+    patches = {
+        'FileSystemStorage': FileSystemStoragePatch,
+    }
+
+    def apply_patch(self):
+        """apply adjustment patch for storage
+        """
+        patch = self.patches.get(self.storage.__class__.__name__)
+        if patch:
+            patch.apply(self)
 
     def __init__(self, root, cmd_channel):
         super(StorageFS, self).__init__(root, cmd_channel)
         self.storage = self.get_storage()
+        self.apply_patch()
 
     def get_storage_class(self):
         if self.storage_class is None:
@@ -47,7 +94,6 @@ class StorageFS(AbstractedFS):
         self._cwd = self.fs2ftp(path)
 
     def mkdir(self, path):
-        # TODO: resolve directory operation
         raise NotImplementedError
 
     def listdir(self, path):
@@ -58,12 +104,11 @@ class StorageFS(AbstractedFS):
         return [name + '/' for name in directories] + files
 
     def rmdir(self, path):
-        # TODO: resolve directory operation
         raise NotImplementedError
 
     def remove(self, path):
         assert isinstance(path, text_type), path
-        self.storage.remove(path)
+        self.storage.delete(path)
 
     def chmod(self, path, mode):
         raise NotImplementedError
