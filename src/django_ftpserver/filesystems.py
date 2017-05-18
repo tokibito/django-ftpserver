@@ -32,10 +32,11 @@ class StoragePatch:
         fs._patch = cls
         for method_name in cls.patch_methods:
             # if fs hasn't method, raise AttributeError.
-            if getattr(fs, method_name):
-                method = getattr(cls, method_name)
-                bound_method = method.__get__(fs, fs.__class__)
-                setattr(fs, method_name, bound_method)
+            origin = getattr(fs, method_name)
+            method = getattr(cls, method_name)
+            bound_method = method.__get__(fs, fs.__class__)
+            setattr(fs, method_name, bound_method)
+            setattr(fs, '_origin_' + method_name, origin)
 
 
 class FileSystemStoragePatch(StoragePatch):
@@ -53,12 +54,34 @@ class FileSystemStoragePatch(StoragePatch):
         return os.stat(self.storage.path(path))
 
 
+class S3Boto3StoragePatch(StoragePatch):
+    patch_methods = (
+        '_exists', 'isdir', 'getmtime',
+    )
+
+    def _exists(self, path):
+        """S3 directory is not S3Ojbect.
+        """
+        if path.endswith('/'):
+            return True
+        return self.storage.exists(path)
+
+    def isdir(self, path):
+        return not self.isfile(path)
+
+    def getmtime(self, path):
+        if self.isdir(path):
+            return 0
+        return self._origin_getmtime(path)
+
+
 class StorageFS(AbstractedFS):
     """FileSystem for bridge to Django storage.
     """
     storage_class = None
     patches = {
         'FileSystemStorage': FileSystemStoragePatch,
+        'S3Boto3Storage': S3Boto3StoragePatch,
     }
 
     def apply_patch(self):
@@ -101,7 +124,8 @@ class StorageFS(AbstractedFS):
         if path == '/':
             path = ''
         directories, files = self.storage.listdir(path)
-        return [name + '/' for name in directories] + files
+        return ([name + '/' for name in directories if name]
+                + [name for name in files if name])
 
     def rmdir(self, path):
         raise NotImplementedError
@@ -114,11 +138,11 @@ class StorageFS(AbstractedFS):
         raise NotImplementedError
 
     def stat(self, path):
-        if self.isdir(path):
+        if self.isfile(path):
+            st_mode = 0o0100770
+        else:
             # directory
             st_mode = 0o0040770
-        else:
-            st_mode = 0o0100770
         return PseudoStat(
             st_size=self.getsize(path),
             st_mtime=int(self.getmtime(path)),
@@ -151,10 +175,12 @@ class StorageFS(AbstractedFS):
         return self._exists(path + '/')
 
     def getsize(self, path):
+        if self.isdir(path):
+            return 0
         return self.storage.size(path)
 
     def getmtime(self, path):
-        return time.mktime(self.storage.get_created_time(path).timetuple())
+        return time.mktime(self.storage.get_modified_time(path).timetuple())
 
     def realpath(self, path):
         return path
