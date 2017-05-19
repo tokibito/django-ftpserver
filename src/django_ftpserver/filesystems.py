@@ -75,6 +75,32 @@ class S3Boto3StoragePatch(StoragePatch):
         return self._origin_getmtime(path)
 
 
+class DjangoGCloudStoragePatch(StoragePatch):
+    patch_methods = (
+        '_exists', 'isdir', 'getmtime', 'listdir',
+    )
+
+    def _exists(self, path):
+        """GCS directory is not blob.
+        """
+        if path.endswith('/'):
+            return True
+        return self.storage.exists(path)
+
+    def isdir(self, path):
+        return not self.isfile(path)
+
+    def getmtime(self, path):
+        if self.isdir(path):
+            return 0
+        return self._origin_getmtime(path)
+
+    def listdir(self, path):
+        if not path.endswith('/'):
+            path += '/'
+        return self._origin_listdir(path)
+
+
 class StorageFS(AbstractedFS):
     """FileSystem for bridge to Django storage.
     """
@@ -82,6 +108,7 @@ class StorageFS(AbstractedFS):
     patches = {
         'FileSystemStorage': FileSystemStoragePatch,
         'S3Boto3Storage': S3Boto3StoragePatch,
+        'DjangoGCloudStorage': DjangoGCloudStoragePatch,
     }
 
     def apply_patch(self):
