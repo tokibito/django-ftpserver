@@ -21,6 +21,8 @@ PseudoStat = namedtuple(
 
 
 class StoragePatch:
+    """Base class for patches to StorageFS.
+    """
     patch_methods = ()
 
     @classmethod
@@ -40,6 +42,8 @@ class StoragePatch:
 
 
 class FileSystemStoragePatch(StoragePatch):
+    """StoragePatch for Django's FileSystemStorage.
+    """
     patch_methods = (
         'mkdir', 'rmdir', 'stat',
     )
@@ -55,6 +59,8 @@ class FileSystemStoragePatch(StoragePatch):
 
 
 class S3Boto3StoragePatch(StoragePatch):
+    """StoragePatch for S3Boto3Storage(provided by django-storages).
+    """
     patch_methods = (
         '_exists', 'isdir', 'getmtime',
     )
@@ -76,6 +82,8 @@ class S3Boto3StoragePatch(StoragePatch):
 
 
 class DjangoGCloudStoragePatch(StoragePatch):
+    """StoragePatch for DjangoGCloudStorage(provided by django-gcloud-storage).
+    """
     patch_methods = (
         '_exists', 'isdir', 'getmtime', 'listdir',
     )

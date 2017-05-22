@@ -2,7 +2,7 @@
 Custom Handlers and Authorizors
 ===============================
 
-Django FTP lets you specify custom handlers and authorizers via Django settings.
+Django FTP Server lets you specify custom handlers and authorizers via Django settings.
 
 Setting Options::
 
