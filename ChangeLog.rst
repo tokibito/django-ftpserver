@@ -2,6 +2,15 @@
 Change History
 ==============
 
+0.5.0
+=====
+:release-date: 2017-05-24
+
+* Added storage system support `#14`_
+* Added Django 1.11 support
+
+.. _#14: https://github.com/tokibito/django-ftpserver/pull/14
+
 0.4.1
 =====
 :release-date: 2017-03-27
