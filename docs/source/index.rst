@@ -14,6 +14,7 @@ Contents:
    overview
    management_commands
    custom_handlers_authorizers
+   using_django_storage
    reference/index
    ChangeLog
 

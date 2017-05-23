@@ -32,8 +32,8 @@ def import_class(class_path):
 
 
 def make_server(
-        server_class, handler_class, authorizer_class, host_port,
-        file_access_user=None, **handler_options):
+        server_class, handler_class, authorizer_class, filesystem_class,
+        host_port, file_access_user=None, **handler_options):
     """make server instance
 
     :host_port: (host, port)
@@ -54,9 +54,14 @@ def make_server(
     if isinstance(authorizer_class, compat.string_type):
         authorizer_class = import_class(authorizer_class)
 
+    if isinstance(filesystem_class, compat.string_type):
+        filesystem_class = import_class(filesystem_class)
+
     authorizer = authorizer_class(file_access_user)
     handler = handler_class
     for key, value in handler_options.items():
         setattr(handler, key, value)
     handler.authorizer = authorizer
+    if filesystem_class is not None:
+        handler.abstracted_fs = filesystem_class
     return server_class(host_port, handler)

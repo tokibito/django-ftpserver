@@ -55,11 +55,12 @@ class Command(BaseCommand):
             help="Use sendfile.")
 
     def make_server(
-            self, server_class, handler_class, authorizer_class, host_port,
-            file_access_user=None, **handler_options):
+            self, server_class, handler_class, authorizer_class,
+            filesystem_class, host_port, file_access_user=None,
+            **handler_options):
         return utils.make_server(
-            server_class, handler_class, authorizer_class, host_port,
-            file_access_user=file_access_user, **handler_options)
+            server_class, handler_class, authorizer_class, filesystem_class,
+            host_port, file_access_user=file_access_user, **handler_options)
 
     def handle(self, *args, **options):
         # bind host and port
@@ -139,11 +140,15 @@ class Command(BaseCommand):
         authorizer_class = utils.get_settings_value('FTPSERVER_AUTHORIZER') \
             or FTPAccountAuthorizer
 
+        filesystem_class = utils.get_settings_value('FTPSERVER_FILESYSTEM') \
+            or None
+
         # setup server
         server = self.make_server(
             server_class=FTPServer,
             handler_class=handler_class,
             authorizer_class=authorizer_class,
+            filesystem_class=filesystem_class,
             host_port=(host, port),
             file_access_user=file_access_user,
             timeout=timeout,
