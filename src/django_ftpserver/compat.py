@@ -4,11 +4,6 @@ with older versions of django
 """
 
 import django
-from django.conf import settings
-
-
-def get_user_model_path():
-    return getattr(settings, 'AUTH_USER_MODEL', None) or 'auth.User'
 
 
 def get_username_field():

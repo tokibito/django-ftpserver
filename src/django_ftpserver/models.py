@@ -1,12 +1,11 @@
 import os
 
 from django.db import models
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
-
-from .compat import get_user_model_path
 
 
 @python_2_unicode_compatible
@@ -30,7 +29,7 @@ class FTPUserGroup(models.Model):
 @python_2_unicode_compatible
 class FTPUserAccount(models.Model):
     user = models.OneToOneField(
-        get_user_model_path(), verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("User"),
         on_delete=models.CASCADE)
     group = models.ForeignKey(
         FTPUserGroup, verbose_name=_("FTP user group"), null=False,
