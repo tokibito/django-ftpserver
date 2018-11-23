@@ -30,10 +30,11 @@ class FTPUserGroup(models.Model):
 @python_2_unicode_compatible
 class FTPUserAccount(models.Model):
     user = models.OneToOneField(
-        get_user_model_path(), verbose_name=_("User"))
+        get_user_model_path(), verbose_name=_("User"),
+        on_delete=models.CASCADE)
     group = models.ForeignKey(
         FTPUserGroup, verbose_name=_("FTP user group"), null=False,
-        blank=False)
+        blank=False, on_delete=models.CASCADE)
     last_login = models.DateTimeField(
         _("Last login"), editable=False, null=True)
     home_dir = models.CharField(

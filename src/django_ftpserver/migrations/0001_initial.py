@@ -43,13 +43,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ftpuseraccount',
             name='group',
-            field=models.ForeignKey(to='django_ftpserver.FTPUserGroup', verbose_name='FTP user group'),
+            field=models.ForeignKey(to='django_ftpserver.FTPUserGroup', verbose_name='FTP user group', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='ftpuseraccount',
             name='user',
-            field=models.OneToOneField(verbose_name='User', to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(verbose_name='User', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

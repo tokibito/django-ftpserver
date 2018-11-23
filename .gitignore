@@ -1,6 +1,7 @@
 *.egg-info
 *.pyc
 *.orig
+*.sqlite3
 .tox
 .coverage
 build
