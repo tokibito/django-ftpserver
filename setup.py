@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,7 +18,7 @@ setup(
     version='0.6.0',
     description="FTP server application for Django.",
     long_description=read('README.rst'),
-    packages=['django_ftpserver'],
+    packages=find_packages(),
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
@@ -26,7 +26,7 @@ setup(
     extras_require={
         'develop': [
             'pytest', 'flake8', 'pytest-django',
-            'pytest-pythonpath', 'tox',
+            'pytest-pythonpath', 'tox', 'wheel',
         ],
     },
     classifiers=[
