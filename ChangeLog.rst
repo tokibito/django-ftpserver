@@ -2,6 +2,14 @@
 Change History
 ==============
 
+0.6.0
+=====
+:release-date: 2018-11-26
+
+* Added Django 2.0, 2.1 support
+* Removed Django <1.11 support
+* Change the test runner from nose to pytest
+
 0.5.0
 =====
 :release-date: 2017-05-24
