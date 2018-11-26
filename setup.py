@@ -1,5 +1,5 @@
 import os
-from setuptools import setup, find_packages
+from setuptools import setup
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,8 +18,7 @@ setup(
     version='0.6.0',
     description="FTP server application for Django.",
     long_description=read('README.rst'),
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
+    packages=['django_ftpserver'],
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
