@@ -5,10 +5,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class FTPUserGroup(models.Model):
     name = models.CharField(
         _("Group name"), max_length=30, null=False, blank=False, unique=True)
@@ -26,7 +24,6 @@ class FTPUserGroup(models.Model):
         verbose_name_plural = _("FTP user groups")
 
 
-@python_2_unicode_compatible
 class FTPUserAccount(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, verbose_name=_("User"),

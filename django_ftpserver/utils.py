@@ -48,13 +48,13 @@ def make_server(
       * keyfile
     """
     from . import compat
-    if isinstance(handler_class, compat.string_type):
+    if isinstance(handler_class, str):
         handler_class = import_class(handler_class)
 
-    if isinstance(authorizer_class, compat.string_type):
+    if isinstance(authorizer_class, str):
         authorizer_class = import_class(authorizer_class)
 
-    if isinstance(filesystem_class, compat.string_type):
+    if isinstance(filesystem_class, str):
         filesystem_class = import_class(filesystem_class)
 
     authorizer = authorizer_class(file_access_user)

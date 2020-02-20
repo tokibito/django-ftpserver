@@ -2,6 +2,16 @@
 Change History
 ==============
 
+0.7.0
+=====
+:release-date: 2020-XX-XX
+
+* Added Django 3.0 support
+* Added Python 3.8 support
+* Removed Django <2.0 support
+* Removed Python 2.7 support
+* Removed six dependency
+
 0.6.0
 =====
 :release-date: 2018-11-26

@@ -6,9 +6,7 @@ https://github.com/django/django/blob/stable/1.8.x/django/utils/daemonize.py
 import os
 import sys
 
-import six
-
-buffering = int(six.PY3)        # No unbuffered text I/O on Python 3 (#20815).
+buffering = 1        # No unbuffered text I/O on Python 3 (#20815).
 
 if os.name == 'posix':
     def become_daemon(our_home_dir='.', out_log='/dev/null',

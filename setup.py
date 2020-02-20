@@ -15,14 +15,14 @@ def read(filename):
 
 setup(
     name='django-ftpserver',
-    version='0.6.0',
+    version='0.7.0',
     description="FTP server application for Django.",
     long_description=read('README.rst'),
     packages=find_packages(),
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
-    install_requires=['Django>=1.11', 'pyftpdlib', 'six'],
+    install_requires=['Django>=2.0', 'pyftpdlib', 'six'],
     extras_require={
         'develop': [
             'pytest', 'flake8', 'pytest-django',
@@ -32,7 +32,6 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

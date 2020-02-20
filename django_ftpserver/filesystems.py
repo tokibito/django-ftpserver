@@ -3,7 +3,6 @@ import time
 import os
 from collections import namedtuple
 
-from six import text_type
 from pyftpdlib.filesystems import AbstractedFS
 
 from django.core.files.storage import (
@@ -148,14 +147,14 @@ class StorageFS(AbstractedFS):
         raise NotImplementedError
 
     def chdir(self, path):
-        assert isinstance(path, text_type), path
+        assert isinstance(path, str), path
         self._cwd = self.fs2ftp(path)
 
     def mkdir(self, path):
         raise NotImplementedError
 
     def listdir(self, path):
-        assert isinstance(path, text_type), path
+        assert isinstance(path, str), path
         if path == '/':
             path = ''
         directories, files = self.storage.listdir(path)
@@ -166,7 +165,7 @@ class StorageFS(AbstractedFS):
         raise NotImplementedError
 
     def remove(self, path):
-        assert isinstance(path, text_type), path
+        assert isinstance(path, str), path
         self.storage.delete(path)
 
     def chmod(self, path, mode):
