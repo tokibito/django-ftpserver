@@ -22,7 +22,7 @@ setup(
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
-    install_requires=['Django>=2.0', 'pyftpdlib', 'six'],
+    install_requires=['Django>=2.0', 'pyftpdlib'],
     extras_require={
         'develop': [
             'pytest', 'flake8', 'pytest-django',
