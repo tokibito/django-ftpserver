@@ -4,7 +4,7 @@ Change History
 
 0.7.0
 =====
-:release-date: 2020-XX-XX
+:release-date: 2020-02-20
 
 * Added Django 3.0 support
 * Added Python 3.8 support
