@@ -55,7 +55,7 @@ Getting Started
 Requirements
 ============
 
-* Target Python version is 2.7, 3.4, 3.5, 3.6, 3.7
+* Target Python version is 2.7, 3.4, 3.5, 3.6, 3.7, 3.8
 * Django>=1.11
 * pyftpdlib
 * six
