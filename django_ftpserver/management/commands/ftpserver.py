@@ -128,6 +128,7 @@ class Command(BaseCommand):
                 handler_class = (
                     utils.get_settings_value('FTPSERVER_TLSHANDLER')
                 ) or handlers.TLS_FTPHandler
+                handler_options = {'tls_control_required': True, 'tls_data_required': True}
             else:
                 # unsupported
                 raise CommandError(
@@ -136,6 +137,7 @@ class Command(BaseCommand):
             handler_class = (
                 utils.get_settings_value('FTPSERVER_HANDLER')
             ) or handlers.FTPHandler
+            handler_options = {}
 
         authorizer_class = utils.get_settings_value('FTPSERVER_AUTHORIZER') \
             or FTPAccountAuthorizer
@@ -156,7 +158,8 @@ class Command(BaseCommand):
             masquerade_address=masquerade_address,
             certfile=certfile,
             keyfile=keyfile,
-            sendfile=sendfile)
+            sendfile=sendfile,
+            **handler_options)
 
         # start server
         quit_command = 'CTRL-BREAK' if sys.platform == 'win32' else 'CONTROL-C'
