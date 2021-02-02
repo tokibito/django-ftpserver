@@ -7,3 +7,6 @@
 build
 dist
 venv
+
+.idea
+.env
