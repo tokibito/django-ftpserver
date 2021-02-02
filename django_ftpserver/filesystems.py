@@ -3,7 +3,7 @@ import time
 import os
 from collections import namedtuple
 
-from pyftpdlib.filesystems import AbstractedFS
+from pyftpdlib.filesystems import AbstractedFS, FilesystemError
 
 from django.core.files.storage import (
     get_storage_class as _get_storage_class
@@ -58,18 +58,21 @@ class FileSystemStoragePatch(StoragePatch):
 
 
 class S3Boto3StoragePatch(StoragePatch):
-    """StoragePatch for S3Boto3Storage(provided by django-storages).
-    """
-    patch_methods = (
-        '_exists', 'isdir', 'getmtime',
-    )
+    """StoragePatch for S3Boto3Storage(provided by django-storages)."""
+
+    patch_methods = ("_exists", "isdir", "getmtime", "rename", "move", "mkdir", "rmdir")
 
     def _exists(self, path):
-        """S3 directory is not S3Ojbect.
-        """
-        if path.endswith('/'):
+        """S3 directory is not S3Ojbect."""
+        if path.endswith("/"):
             return True
         return self.storage.exists(path)
+
+    def mkdir(self, path):
+        pass
+
+    def rmdir(self, path):
+        pass
 
     def isdir(self, path):
         return not self.isfile(path)
@@ -78,6 +81,19 @@ class S3Boto3StoragePatch(StoragePatch):
         if self.isdir(path):
             return 0
         return self._origin_getmtime(path)
+
+    def rename(self, src, dst):
+        self._rename(src, dst)
+
+    def move(self, src, dst):
+        if src.startswith("/"):
+            src = src[1:]
+        if dst.startswith("/"):
+            dst = dst[1:]
+        self.storage.bucket.Object(dst).copy(
+            {"Bucket": self.storage.bucket.name, "Key": src}
+        )
+        self.storage.bucket.Object(src).delete()
 
 
 class DjangoGCloudStoragePatch(StoragePatch):
@@ -151,18 +167,23 @@ class StorageFS(AbstractedFS):
         self._cwd = self.fs2ftp(path)
 
     def mkdir(self, path):
-        raise NotImplementedError
+        self.storage.mkdir(path)
+
+    def move(self, src, dst):
+        self.storage.move(src, dst)
 
     def listdir(self, path):
         assert isinstance(path, str), path
-        if path == '/':
-            path = ''
-        directories, files = self.storage.listdir(path)
-        return ([name + '/' for name in directories if name]
-                + [name for name in files if name])
+        if path == "/":
+            path = ""
+        try:
+            directories, files = self.storage.listdir(path)
+            return directories + files
+        except Exception:
+            raise FilesystemError
 
     def rmdir(self, path):
-        raise NotImplementedError
+        self.storage.rmdir(path)
 
     def remove(self, path):
         assert isinstance(path, str), path
@@ -202,16 +223,15 @@ class StorageFS(AbstractedFS):
         return False
 
     def isdir(self, path):
-        if path == '':
-            return True
-        elif path.endswith('/'):
-            return self._exists(path)
-        return self._exists(path + '/')
+        return self.storage.isdir(path)
 
     def getsize(self, path):
         if self.isdir(path):
             return 0
-        return self.storage.size(path)
+        try:
+            return self.storage.size(path)
+        except Exception:
+            raise FilesystemError
 
     def getmtime(self, path):
         return time.mktime(self.storage.get_modified_time(path).timetuple())
@@ -227,3 +247,6 @@ class StorageFS(AbstractedFS):
 
     def get_group_by_gid(self, gid):
         return "group"
+
+    def _rename(self, src, dst):
+        self.storage.move(src, dst)
