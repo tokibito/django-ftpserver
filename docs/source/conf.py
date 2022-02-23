@@ -39,7 +39,8 @@ def setup_django():
                 'django.contrib.sessions',
                 'django.contrib.messages',
                 'django_ftpserver',
-            )
+            ),
+            SECRET='secret'
         )
     django.setup()
     from django.apps import apps
