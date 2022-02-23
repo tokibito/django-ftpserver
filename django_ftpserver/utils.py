@@ -47,7 +47,6 @@ def make_server(
       * certfile
       * keyfile
     """
-    from . import compat
     if isinstance(handler_class, str):
         handler_class = import_class(handler_class)
 

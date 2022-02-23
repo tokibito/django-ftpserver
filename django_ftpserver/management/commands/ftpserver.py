@@ -128,7 +128,10 @@ class Command(BaseCommand):
                 handler_class = (
                     utils.get_settings_value('FTPSERVER_TLSHANDLER')
                 ) or handlers.TLS_FTPHandler
-                handler_options = {'tls_control_required': True, 'tls_data_required': True}
+                handler_options = {
+                    'tls_control_required': True,
+                    'tls_data_required': True
+                }
             else:
                 # unsupported
                 raise CommandError(
