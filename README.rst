@@ -2,7 +2,7 @@
 Django FTP server
 =================
 
-|build-status| |pypi| |docs|
+|build-status| |pypi| |python-version| |docs|
 
 FTP server application that used user authentication of Django.
 
@@ -81,9 +81,11 @@ Author
 
 * Shinya Okano
 
-.. |build-status| image:: https://travis-ci.org/tokibito/django-ftpserver.svg?branch=master
-   :target: https://travis-ci.org/tokibito/django-ftpserver
+.. |build-status| image:: https://github.com/tokibito/django-ftpserver/workflows/Tests/badge.svg
+   :target: https://github.com/tokibito/django-ftpserver
 .. |docs| image:: https://readthedocs.org/projects/django-ftpserver/badge/?version=latest
    :target: https://readthedocs.org/projects/django-ftpserver/
 .. |pypi| image:: https://badge.fury.io/py/django-ftpserver.svg
    :target: http://badge.fury.io/py/django-ftpserver
+.. |python-version| image:: https://img.shields.io/pypi/pyversions/django-ftpserver.svg
+   :target: https://pypi.python.org/pypi/django-ftpserver
