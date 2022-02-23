@@ -13,12 +13,10 @@
 # serve to show the default.
 
 import sys
-import os
+from pathlib import Path
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(BASE_DIR))
 
 def setup_django():
     import django
@@ -40,7 +38,7 @@ def setup_django():
                 'django.contrib.messages',
                 'django_ftpserver',
             ),
-            SECRET='secret'
+            SECRET_KEY='secret'
         )
     django.setup()
     from django.apps import apps
