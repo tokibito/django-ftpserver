@@ -2,6 +2,18 @@
 Change History
 ==============
 
+0.8.0
+=====
+:release-date: 2022-02-24
+
+* Added Django 3.1, 3.2, 4.0 support
+* Added Python 3.9, 3.10 support
+* Removed Django <2.2 support
+* Removed Python 3.4, 3.5 support
+* Enable encryption before authentication for FTP+TLS `#21`_
+
+.. _#21: https://github.com/tokibito/django-ftpserver/pull/21
+
 0.7.0
 =====
 :release-date: 2020-02-20
