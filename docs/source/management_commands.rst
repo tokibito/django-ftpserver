@@ -19,6 +19,8 @@ For example, it binds to address of 10.0.0.1:21::
 
    $ python manage.py ftpserver 10.0.0.1:21
 
+Keep in mind that you need root permissions if you use well known ports (0 - 1023) for ``ftpserver``.
+
 .. csv-table:: options
    :header-rows: 1
 
