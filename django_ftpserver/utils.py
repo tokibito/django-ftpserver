@@ -1,9 +1,52 @@
 from django.conf import settings
 
+# Default values for FTPSERVER_* settings
+# Class values are specified as strings to avoid circular imports
+FTPSERVER_DEFAULTS = {
+    "FTPSERVER_HOST": "127.0.0.1",
+    "FTPSERVER_PORT": 21,
+    "FTPSERVER_TIMEOUT": None,
+    "FTPSERVER_PASSIVE_PORTS": None,
+    "FTPSERVER_MASQUERADE_ADDRESS": None,
+    "FTPSERVER_FILE_ACCESS_USER": None,
+    "FTPSERVER_CERTFILE": None,
+    "FTPSERVER_KEYFILE": None,
+    "FTPSERVER_SENDFILE": None,
+    "FTPSERVER_DAEMONIZE": False,
+    "FTPSERVER_DAEMONIZE_OPTIONS": {},
+    "FTPSERVER_PIDFILE": None,
+    "FTPSERVER_HANDLER": "django_ftpserver.handlers.DjangoFTPHandler",
+    "FTPSERVER_TLSHANDLER": "django_ftpserver.handlers.DjangoTLS_FTPHandler",
+    "FTPSERVER_AUTHORIZER": "django_ftpserver.authorizers.FTPAccountAuthorizer",
+    "FTPSERVER_FILESYSTEM": None,
+}
+
 
 def get_settings_value(name):
-    """Return the django settings value for name attribute"""
+    """Return the django settings value for name attribute
+
+    .. deprecated::
+        Use :func:`get_ftp_setting` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "get_settings_value is deprecated, use get_ftp_setting instead",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return getattr(settings, name, None)
+
+
+def get_ftp_setting(name):
+    """Return the FTP server setting value with default fallback.
+
+    First checks Django settings, then falls back to FTPSERVER_DEFAULTS.
+    """
+    value = getattr(settings, name, None)
+    if value is None:
+        return FTPSERVER_DEFAULTS.get(name)
+    return value
 
 
 def parse_ports(ports_text):

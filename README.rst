@@ -18,7 +18,8 @@ Features
 * Integration with Django Storage backends (S3, Google Cloud Storage, etc.) [#experimental]_
 * Passive mode and masquerade address configuration
 * Cross-platform support (Windows/Unix)
-* Easy setup with management commands (createftpusergroup, createftpuseraccount)
+* Management commands for FTP user/group operations (create, list, delete)
+* Django signals for FTP events (login, logout, file transfers, etc.)
 
 .. [#experimental] Experimental feature. May be removed in future versions.
 

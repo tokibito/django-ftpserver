@@ -1,6 +1,6 @@
 import logging
-import sys
 import os
+import sys
 
 import pyftpdlib
 from pyftpdlib.servers import FTPServer
@@ -9,11 +9,9 @@ from django import get_version
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from django_ftpserver.authorizers import FTPAccountAuthorizer
-from django_ftpserver.daemonizer import become_daemon
-from django_ftpserver.handlers import DjangoFTPHandler, DjangoTLS_FTPHandler
 from django_ftpserver import signals
 from django_ftpserver import utils
+from django_ftpserver.daemonizer import become_daemon
 
 
 logger = logging.getLogger(__name__)
@@ -92,90 +90,87 @@ class Command(BaseCommand):
             **handler_options,
         )
 
-    def handle(self, *args, **options):
-        # bind host and port
+    def _get_option(self, options, option_name, setting_name):
+        """Get option value from command line or settings with default fallback."""
+        return options.get(option_name) or utils.get_ftp_setting(setting_name)
+
+    def _parse_host_port(self, options):
+        """Parse host and port from options or settings."""
         host_port = options.get("host_port")
         if host_port:
             host, _port = host_port.split(":", 1)
-            port = int(_port)
-        else:
-            host = utils.get_settings_value("FTPSERVER_HOST") or "127.0.0.1"
-            port = utils.get_settings_value("FTPSERVER_PORT") or 21
-
-        timeout = options["timeout"] or utils.get_settings_value("FTPSERVER_TIMEOUT")
-
-        # passive ports
-        _passive_ports = options["passive-ports"] or utils.get_settings_value(
-            "FTPSERVER_PASSIVE_PORTS"
-        )
-        if _passive_ports:
-            try:
-                passive_ports = utils.parse_ports(_passive_ports)
-            except (TypeError, ValueError):
-                raise CommandError(
-                    "Invalid passive ports: {}".format(options["passive-ports"])
-                )
-        else:
-            passive_ports = None
-
-        # masquerade address
-        masquerade_address = options["masquerade-address"] or utils.get_settings_value(
-            "FTPSERVER_MASQUERADE_ADDRESS"
+            return host, int(_port)
+        return (
+            utils.get_ftp_setting("FTPSERVER_HOST"),
+            utils.get_ftp_setting("FTPSERVER_PORT"),
         )
 
-        # file access user
-        file_access_user = options["file-access-user"] or utils.get_settings_value(
-            "FTPSERVER_FILE_ACCESS_USER"
+    def _parse_passive_ports(self, options):
+        """Parse passive ports from options or settings."""
+        passive_ports_str = self._get_option(
+            options, "passive-ports", "FTPSERVER_PASSIVE_PORTS"
         )
-
-        # certfile
-        certfile = options["certfile"] or utils.get_settings_value("FTPSERVER_CERTFILE")
-
-        # keyfile
-        keyfile = options["keyfile"] or utils.get_settings_value("FTPSERVER_KEYFILE")
-
-        # sendfile
-        sendfile = options["sendfile"] or utils.get_settings_value("FTPSERVER_SENDFILE")
-
-        # daemonize
-        daemonize = options["daemonize"] or utils.get_settings_value(
-            "FTPSERVER_DAEMONIZE"
-        )
-        if daemonize:
-            daemonize_options = (
-                utils.get_settings_value("FTPSERVER_DAEMONIZE_OPTIONS") or {}
+        if not passive_ports_str:
+            return None
+        try:
+            return utils.parse_ports(passive_ports_str)
+        except (TypeError, ValueError):
+            raise CommandError(
+                "Invalid passive ports: {}".format(options["passive-ports"])
             )
-            become_daemon(**daemonize_options)
 
-        # write pid to file
-        pidfile = options["pidfile"] or utils.get_settings_value("FTPSERVER_PIDFILE")
-        if pidfile:
-            with open(pidfile, "w") as f:
-                f.write(str(os.getpid()))
-
-        # select handler class
+    def _get_handler_class_and_options(self, certfile, keyfile):
+        """Get handler class and options based on TLS configuration."""
         if certfile or keyfile:
             try:
                 from pyftpdlib.handlers import TLS_FTPHandler  # noqa: F401
             except ImportError:
                 raise CommandError("Can't import OpenSSL. Please install pyOpenSSL.")
-            handler_class = (
-                utils.get_settings_value("FTPSERVER_TLSHANDLER")
-            ) or DjangoTLS_FTPHandler
+            handler_class = utils.get_ftp_setting("FTPSERVER_TLSHANDLER")
             handler_options = {"tls_control_required": True, "tls_data_required": True}
         else:
-            handler_class = (
-                utils.get_settings_value("FTPSERVER_HANDLER")
-            ) or DjangoFTPHandler
+            handler_class = utils.get_ftp_setting("FTPSERVER_HANDLER")
             handler_options = {}
+        return handler_class, handler_options
 
-        authorizer_class = (
-            utils.get_settings_value("FTPSERVER_AUTHORIZER") or FTPAccountAuthorizer
+    def _setup_daemon(self, options):
+        """Setup daemon mode if enabled."""
+        daemonize = self._get_option(options, "daemonize", "FTPSERVER_DAEMONIZE")
+        if daemonize:
+            daemonize_options = utils.get_ftp_setting("FTPSERVER_DAEMONIZE_OPTIONS")
+            become_daemon(**daemonize_options)
+
+    def _write_pidfile(self, options):
+        """Write PID to file if pidfile option is set."""
+        pidfile = self._get_option(options, "pidfile", "FTPSERVER_PIDFILE")
+        if pidfile:
+            with open(pidfile, "w") as f:
+                f.write(str(os.getpid()))
+
+    def handle(self, *args, **options):
+        host, port = self._parse_host_port(options)
+        passive_ports = self._parse_passive_ports(options)
+
+        timeout = self._get_option(options, "timeout", "FTPSERVER_TIMEOUT")
+        masquerade_address = self._get_option(
+            options, "masquerade-address", "FTPSERVER_MASQUERADE_ADDRESS"
         )
+        file_access_user = self._get_option(
+            options, "file-access-user", "FTPSERVER_FILE_ACCESS_USER"
+        )
+        certfile = self._get_option(options, "certfile", "FTPSERVER_CERTFILE")
+        keyfile = self._get_option(options, "keyfile", "FTPSERVER_KEYFILE")
+        sendfile = self._get_option(options, "sendfile", "FTPSERVER_SENDFILE")
 
-        filesystem_class = utils.get_settings_value("FTPSERVER_FILESYSTEM") or None
+        self._setup_daemon(options)
+        self._write_pidfile(options)
 
-        # setup server
+        handler_class, handler_options = self._get_handler_class_and_options(
+            certfile, keyfile
+        )
+        authorizer_class = utils.get_ftp_setting("FTPSERVER_AUTHORIZER")
+        filesystem_class = utils.get_ftp_setting("FTPSERVER_FILESYSTEM")
+
         server = self.make_server(
             server_class=FTPServer,
             handler_class=handler_class,
