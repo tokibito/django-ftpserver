@@ -22,20 +22,19 @@ setup(
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
     url='https://github.com/tokibito/django-ftpserver',
-    install_requires=['Django>=2.2', 'pyftpdlib'],
+    install_requires=['Django>=3.2', 'pyftpdlib'],
     extras_require={
         'develop': [
             'pytest', 'flake8', 'pytest-django',
-            'pytest-pythonpath', 'tox', 'wheel',
+            'tox', 'wheel',
         ],
     },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'License :: OSI Approved :: MIT License',
     ])
