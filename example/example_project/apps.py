@@ -2,7 +2,6 @@
 AppConfig for example_project with auto-setup functionality.
 """
 
-import secrets
 import sys
 from pathlib import Path
 
@@ -48,30 +47,26 @@ class ExampleProjectConfig(AppConfig):
         try:
             user = User.objects.filter(username='demo').first()
             if user is None:
-                # Generate random password
-                password = secrets.token_urlsafe(12)
-
-                # Create superuser
+                # Create superuser with demo/demo credentials
                 user = User.objects.create_superuser(
                     username='demo',
                     email='demo@example.com',
-                    password=password,
+                    password='demo',
                 )
 
                 # Create FTP group and account
                 self._setup_ftp_account(user)
 
                 # Print credentials
-                import sys
                 print()
                 print('=' * 50)
                 print('Demo user created!')
-                print(f'  Username: demo')
-                print(f'  Password: {password}')
+                print('  Username: demo')
+                print('  Password: demo')
                 print('=' * 50)
                 print()
                 sys.stdout.flush()
-        except Exception as e:
+        except Exception:
             # Silently ignore errors (e.g., migrations not applied)
             pass
 

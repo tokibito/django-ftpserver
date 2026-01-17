@@ -10,6 +10,10 @@ Change History
 * Added Python 3.13, 3.14 support
 * Removed Django 3.2, 4.0, 4.1 support
 * Removed Python 3.8, 3.9 support
+* Removed compat module
+* Replaced daemonize module with python-daemon
+* Added example project
+* Migrated to pyproject.toml and ruff
 
 0.9.0
 =====

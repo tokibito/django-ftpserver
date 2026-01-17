@@ -7,3 +7,5 @@
 build
 dist
 venv
+example/data/*
+!example/data/.gitkeep
