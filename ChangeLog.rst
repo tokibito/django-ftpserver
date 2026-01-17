@@ -2,6 +2,18 @@
 Change History
 ==============
 
+0.9.0
+=====
+:release-date: 2026-01-17
+
+* Added Django 4.1, 4.2 support
+* Added Python 3.11, 3.12 support
+* Removed Django 2.2, 3.0, 3.1 support
+* Removed Python 3.6, 3.7, 3.8 support
+* Removed pytest-pythonpath dependency (use pytest built-in pythonpath)
+* Removed Travis CI configuration
+* Updated GitHub Actions
+
 0.8.0
 =====
 :release-date: 2022-02-24
