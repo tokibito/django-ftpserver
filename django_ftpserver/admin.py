@@ -15,6 +15,7 @@ class FTPUserAccountAdmin(admin.ModelAdmin):
 
     list_display = ("user", "group", "last_login")
     search_fields = ("user", "group", "last_login")
+    raw_id_fields = ("user",)
 
 
 admin.site.register(models.FTPUserGroup, FTPUserGroupAdmin)

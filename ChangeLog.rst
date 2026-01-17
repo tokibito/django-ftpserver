@@ -13,6 +13,7 @@ Change History
 * Added TLS install option (``pip install django-ftpserver[tls]``)
 * Fixed "MySQL server has gone away" error in long-running FTP server processes
 * Added support for django-storages 1.14+ (S3Storage, GoogleCloudStorage)
+* Changed FTPUserAccount.user field to use raw_id_fields in admin
 
 0.10.0
 ======
