@@ -5,9 +5,7 @@ from collections import namedtuple
 
 from pyftpdlib.filesystems import AbstractedFS
 
-from django.core.files.storage import (
-    get_storage_class as _get_storage_class
-)
+from django.core.files.storage import storages
 
 logger = logging.getLogger(__name__)
 
@@ -130,14 +128,10 @@ class StorageFS(AbstractedFS):
         self.storage = self.get_storage()
         self.apply_patch()
 
-    def get_storage_class(self):
-        if self.storage_class is None:
-            return _get_storage_class()
-        return self.storage_class
-
     def get_storage(self):
-        storage_class = self.get_storage_class()
-        return storage_class()
+        if self.storage_class is None:
+            return storages["default"]
+        return self.storage_class()
 
     def open(self, filename, mode):
         path = os.path.join(self._cwd, filename)
