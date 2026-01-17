@@ -1,5 +1,3 @@
-import sys
-
 from django.core.management.base import BaseCommand, CommandError
 
 from django_ftpserver import models
@@ -33,7 +31,7 @@ class Command(BaseCommand):
             group.permission = options["permission"]
         group.save()
 
-        sys.stdout.write(
+        self.stdout.write(
             "FTP user group pk={pk}, {name} was created.\n".format(
                 pk=group.pk, name=name
             )

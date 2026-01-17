@@ -6,6 +6,8 @@ Change History
 =====
 :release-date: 2026-01-17
 
+* Added management commands for listing and deleting FTP user groups and accounts
+  (listftpusergroup, deleteftpusergroup, listftpuseraccount, deleteftpuseraccount)
 * Added Django 6.0 support
 * Added Django signals for FTP events (login, logout, file transfer, file operations)
 * Added DjangoFTPHandler and DjangoTLS_FTPHandler with signal support

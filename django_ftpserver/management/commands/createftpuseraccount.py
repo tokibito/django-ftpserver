@@ -1,5 +1,3 @@
-import sys
-
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 
@@ -45,7 +43,7 @@ class Command(BaseCommand):
             user=user, group=group, home_dir=home_dir
         )
 
-        sys.stdout.write(
+        self.stdout.write(
             'FTP user account pk={pk}, "{username}" was created.\n'.format(
                 pk=account.pk, username=username
             )
