@@ -4,7 +4,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 
 from django_ftpserver import models
-from django_ftpserver.compat import get_username_field
 
 
 class Command(BaseCommand):
@@ -28,7 +27,7 @@ class Command(BaseCommand):
 
         User = get_user_model()
         try:
-            user = User.objects.get(**{get_username_field(): username})
+            user = User.objects.get(**{User.USERNAME_FIELD: username})
         except User.DoesNotExist:
             raise CommandError(
                 'User "{username}" is not exists.'.format(username=username))

@@ -37,8 +37,8 @@ develop = [
 [project.urls]
 Homepage = "https://github.com/tokibito/django-ftpserver"
 
-[tool.setuptools]
-packages = ["django_ftpserver"]
+[tool.setuptools.packages.find]
+include = ["django_ftpserver*"]
 
 [tool.pytest.ini_options]
 django_find_project = false

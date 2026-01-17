@@ -1,10 +1,9 @@
 import os
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from pyftpdlib.authorizers import AuthenticationFailed
 
 from . import models
-from .compat import get_username_field
 
 
 def _get_personate_user_class():
@@ -25,7 +24,7 @@ class FTPAccountAuthorizer(object):
     personate_user_class = None
 
     def __init__(self, file_access_user=None):
-        self.username_field = get_username_field()
+        self.username_field = get_user_model().USERNAME_FIELD
         if file_access_user:
             personate_user_class = (
                 self.personate_user_class or _get_personate_user_class())

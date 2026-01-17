@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from django_ftpserver.authorizers import FTPAccountAuthorizer
-from django_ftpserver.daemonize import become_daemon
+from django_ftpserver.daemonizer import become_daemon
 from django_ftpserver import utils
 
 
