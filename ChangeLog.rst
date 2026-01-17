@@ -2,11 +2,17 @@
 Change History
 ==============
 
+1.0.0
+=====
+:release-date: 2026-01-17
+
+* Added Django 6.0 support
+
 0.10.0
 ======
 :release-date: 2026-01-17
 
-* Added Django 5.0, 5.1, 5.2, 6.0 support
+* Added Django 5.0, 5.1, 5.2 support
 * Added Python 3.13, 3.14 support
 * Removed Django 3.2, 4.0, 4.1 support
 * Removed Python 3.8, 3.9 support
