@@ -1,8 +1,8 @@
+import logging
 import sys
 import os
 
 import pyftpdlib
-from pyftpdlib import handlers
 from pyftpdlib.servers import FTPServer
 
 from django import get_version
@@ -11,7 +11,12 @@ from django.core.management.base import BaseCommand, CommandError
 
 from django_ftpserver.authorizers import FTPAccountAuthorizer
 from django_ftpserver.daemonizer import become_daemon
+from django_ftpserver.handlers import DjangoFTPHandler, DjangoTLS_FTPHandler
+from django_ftpserver import signals
 from django_ftpserver import utils
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -124,22 +129,22 @@ class Command(BaseCommand):
 
         # select handler class
         if certfile or keyfile:
-            if hasattr(handlers, 'TLS_FTPHandler'):
-                handler_class = (
-                    utils.get_settings_value('FTPSERVER_TLSHANDLER')
-                ) or handlers.TLS_FTPHandler
-                handler_options = {
-                    'tls_control_required': True,
-                    'tls_data_required': True
-                }
-            else:
-                # unsupported
+            try:
+                from pyftpdlib.handlers import TLS_FTPHandler  # noqa: F401
+            except ImportError:
                 raise CommandError(
                     "Can't import OpenSSL. Please install pyOpenSSL.")
+            handler_class = (
+                utils.get_settings_value('FTPSERVER_TLSHANDLER')
+            ) or DjangoTLS_FTPHandler
+            handler_options = {
+                'tls_control_required': True,
+                'tls_data_required': True
+            }
         else:
             handler_class = (
                 utils.get_settings_value('FTPSERVER_HANDLER')
-            ) or handlers.FTPHandler
+            ) or DjangoFTPHandler
             handler_options = {}
 
         authorizer_class = utils.get_settings_value('FTPSERVER_AUTHORIZER') \
@@ -174,4 +179,27 @@ class Command(BaseCommand):
             version_ftp=pyftpdlib.__ver__,
             settings=settings.SETTINGS_MODULE,
             quit_command=quit_command))
-        server.serve_forever()
+
+        logger.debug(
+            "FTP server starting: host=%s, port=%s",
+            host, port
+        )
+        signals.ftp_server_started.send(
+            sender=self.__class__,
+            server=server,
+            host=host,
+            port=port,
+        )
+        try:
+            server.serve_forever()
+        finally:
+            logger.debug(
+                "FTP server stopping: host=%s, port=%s",
+                host, port
+            )
+            signals.ftp_server_stopped.send(
+                sender=self.__class__,
+                server=server,
+                host=host,
+                port=port,
+            )

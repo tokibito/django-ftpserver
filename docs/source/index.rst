@@ -14,6 +14,7 @@ Contents:
    overview
    management_commands
    custom_handlers_authorizers
+   signals
    using_django_storage
    deployment
    reference/index
