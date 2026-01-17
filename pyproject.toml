@@ -26,12 +26,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+windows = [
+    "pywin32",
+]
 develop = [
     "pytest",
     "ruff",
     "pytest-django",
     "tox",
-    "wheel",
 ]
 
 [project.urls]

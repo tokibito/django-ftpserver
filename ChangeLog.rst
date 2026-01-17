@@ -14,6 +14,7 @@ Change History
 * Replaced daemonize module with python-daemon
 * Added example project
 * Migrated to pyproject.toml and ruff
+* Added windows install option for pywin32 dependency
 
 0.9.0
 =====
