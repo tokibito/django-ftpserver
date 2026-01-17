@@ -10,6 +10,7 @@ Change History
 * Added Django signals for FTP events (login, logout, file transfer, file operations)
 * Added DjangoFTPHandler and DjangoTLS_FTPHandler with signal support
 * Added DEBUG level logging for all FTP events
+* Added TLS install option (``pip install django-ftpserver[tls]``)
 
 0.10.0
 ======
