@@ -1,9 +1,26 @@
+import functools
 import os
 
 from django.contrib.auth import authenticate, get_user_model
+from django.db import close_old_connections
 from pyftpdlib.authorizers import AuthenticationFailed
 
 from . import models
+
+
+def ensure_db_connection(func):
+    """Decorator to close old database connections before executing the function.
+
+    This prevents "MySQL server has gone away" errors in long-running FTP server
+    processes by closing stale database connections before making new queries.
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        close_old_connections()
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 def _get_personate_user_class():
@@ -37,10 +54,12 @@ class FTPAccountAuthorizer(object):
     def _filter_user_by(self, username):
         return {"user__%s" % self.username_field: username}
 
+    @ensure_db_connection
     def has_user(self, username):
         """return True if exists user."""
         return self.model.objects.filter(**self._filter_user_by(username)).exists()
 
+    @ensure_db_connection
     def get_account(self, username):
         """return user by username."""
         try:
@@ -49,6 +68,7 @@ class FTPAccountAuthorizer(object):
             return None
         return account
 
+    @ensure_db_connection
     def validate_authentication(self, username, password, handler):
         """authenticate user with password"""
         user = authenticate(**{self.username_field: username, "password": password})
@@ -62,6 +82,7 @@ class FTPAccountAuthorizer(object):
             return ""
         return account.get_home_dir()
 
+    @ensure_db_connection
     def get_msg_login(self, username):
         """message for welcome."""
         account = self.get_account(username)

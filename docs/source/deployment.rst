@@ -225,3 +225,35 @@ Always ensure your production settings include::
 
    DEBUG = False
 
+Database Connection Settings
+----------------------------
+
+The FTP server is a long-running process, and database connections may become stale over time. This can cause errors like "MySQL server has gone away" or "connection already closed" when the database server closes idle connections.
+
+Django FTP Server automatically handles stale connections by closing old connections before database operations. However, you should also configure Django's database settings appropriately for long-running processes.
+
+**CONN_MAX_AGE**
+
+Set ``CONN_MAX_AGE`` to limit the maximum lifetime of a database connection. This should be shorter than your database server's connection timeout (MySQL's ``wait_timeout`` defaults to 8 hours)::
+
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.mysql',
+           # ... other settings ...
+           'CONN_MAX_AGE': 600,  # Close connections after 10 minutes
+       }
+   }
+
+**CONN_HEALTH_CHECKS** (Django 4.1+)
+
+Enable connection health checks to verify connections are still usable before reusing them::
+
+   DATABASES = {
+       'default': {
+           'ENGINE': 'django.db.backends.mysql',
+           # ... other settings ...
+           'CONN_MAX_AGE': 600,
+           'CONN_HEALTH_CHECKS': True,
+       }
+   }
+

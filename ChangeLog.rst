@@ -11,6 +11,7 @@ Change History
 * Added DjangoFTPHandler and DjangoTLS_FTPHandler with signal support
 * Added DEBUG level logging for all FTP events
 * Added TLS install option (``pip install django-ftpserver[tls]``)
+* Fixed "MySQL server has gone away" error in long-running FTP server processes
 
 0.10.0
 ======
