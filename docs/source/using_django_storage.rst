@@ -49,7 +49,30 @@ The following diagram shows how FTP client requests flow through the system when
 Settings
 ========
 
-Example configuration::
+Amazon S3 (Django 4.2+)
+-----------------------
+
+Example configuration using django-storages 1.14+::
+
+   # Change FTP server filesystem
+   FTPSERVER_FILESYSTEM = 'django_ftpserver.filesystems.StorageFS'
+
+   # Using Amazon S3 storage (django-storages 1.14+)
+   STORAGES = {
+       "default": {
+           "BACKEND": "storages.backends.s3.S3Storage",
+           "OPTIONS": {
+               "access_key": "(your access key id)",
+               "secret_key": "(your secret access key)",
+               "bucket_name": "your.storage.bucket",
+           },
+       },
+   }
+
+Amazon S3 (Django < 4.2)
+------------------------
+
+Example configuration using django-storages::
 
    # Change FTP server filesystem
    FTPSERVER_FILESYSTEM = 'django_ftpserver.filesystems.StorageFS'
@@ -57,5 +80,37 @@ Example configuration::
    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
    # Config for S3Boto3Storage
    AWS_ACCESS_KEY_ID = '(your access key id)'
-   AWS_SECRET_ACCESS_KEY = 'your secret access key'
+   AWS_SECRET_ACCESS_KEY = '(your secret access key)'
    AWS_STORAGE_BUCKET_NAME = 'your.storage.bucket'
+
+Google Cloud Storage (Django 4.2+)
+----------------------------------
+
+Example configuration using django-storages 1.14+::
+
+   # Change FTP server filesystem
+   FTPSERVER_FILESYSTEM = 'django_ftpserver.filesystems.StorageFS'
+
+   # Using Google Cloud Storage (django-storages 1.14+)
+   STORAGES = {
+       "default": {
+           "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+           "OPTIONS": {
+               "bucket_name": "your-bucket-name",
+               "project_id": "(your project id)",
+           },
+       },
+   }
+
+Google Cloud Storage (Django < 4.2)
+-----------------------------------
+
+Example configuration using django-storages::
+
+   # Change FTP server filesystem
+   FTPSERVER_FILESYSTEM = 'django_ftpserver.filesystems.StorageFS'
+   # Using Google Cloud Storage (django-storages)
+   DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+   # Config for GoogleCloudStorage
+   GS_BUCKET_NAME = 'your-bucket-name'
+   GS_PROJECT_ID = '(your project id)'

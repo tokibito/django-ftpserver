@@ -12,6 +12,7 @@ Change History
 * Added DEBUG level logging for all FTP events
 * Added TLS install option (``pip install django-ftpserver[tls]``)
 * Fixed "MySQL server has gone away" error in long-running FTP server processes
+* Added support for django-storages 1.14+ (S3Storage, GoogleCloudStorage)
 
 0.10.0
 ======
