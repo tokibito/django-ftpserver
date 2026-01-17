@@ -6,6 +6,22 @@ Django FTP server
 
 FTP server application that used user authentication of Django.
 
+Features
+========
+
+* FTP server integrated with Django's user authentication system
+* Permission management through FTP user groups (read, write, delete, etc.)
+* Per-user and per-group home directory configuration
+* FTP account management via Django Admin
+* Secure communication with TLS/SSL support (FTPS)
+* Daemon mode for background service operation
+* Integration with Django Storage backends (S3, Google Cloud Storage, etc.) [#experimental]_
+* Passive mode and masquerade address configuration
+* Cross-platform support (Windows/Unix)
+* Easy setup with management commands (createftpusergroup, createftpuseraccount)
+
+.. [#experimental] Experimental feature. May be removed in future versions.
+
 Getting Started
 ===============
 
