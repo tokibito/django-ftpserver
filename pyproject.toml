@@ -26,6 +26,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+tls = [
+    "pyOpenSSL",
+]
 windows = [
     "pywin32",
 ]

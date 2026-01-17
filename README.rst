@@ -31,6 +31,19 @@ Getting Started
 
    $ pip install django-ftpserver
 
+Optional dependencies can be installed with extras:
+
+::
+
+   # For TLS/SSL support (FTPS)
+   $ pip install django-ftpserver[tls]
+
+   # For Windows service support
+   $ pip install django-ftpserver[windows]
+
+   # Multiple extras
+   $ pip install django-ftpserver[tls,windows]
+
 2. Add line to settings.INSTALLED_APPS for your django project.
 
 ::
@@ -74,6 +87,12 @@ Requirements
 * Target Python version is 3.10, 3.11, 3.12, 3.13, 3.14
 * Django>=4.2
 * pyftpdlib
+
+Optional Dependencies
+---------------------
+
+* pyOpenSSL - Required for TLS/SSL support (``pip install django-ftpserver[tls]``)
+* pywin32 - Required for Windows service support (``pip install django-ftpserver[windows]``)
 
 License
 =======

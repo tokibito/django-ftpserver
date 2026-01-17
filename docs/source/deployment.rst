@@ -16,6 +16,12 @@ TLS/SSL Required
 
 In production environments, you should always enable TLS/SSL encryption (FTPS). FTPS encrypts both the control and data connections, protecting credentials and file transfers from eavesdropping.
 
+First, install the TLS dependencies::
+
+   $ pip install django-ftpserver[tls]
+
+This installs pyOpenSSL which is required for TLS/SSL support.
+
 Configure TLS by specifying certificate and key files::
 
    $ python manage.py ftpserver --certfile=/path/to/cert.pem --keyfile=/path/to/key.pem
