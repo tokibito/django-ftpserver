@@ -37,10 +37,10 @@ def serve_data_file(request, path):
         # Serve the file with appropriate content type
         content_type, _ = mimetypes.guess_type(str(file_path))
         if content_type is None:
-            content_type = 'application/octet-stream'
+            content_type = "application/octet-stream"
 
-        response = FileResponse(open(file_path, 'rb'), content_type=content_type)
-        response['Content-Disposition'] = f'inline; filename="{file_path.name}"'
+        response = FileResponse(open(file_path, "rb"), content_type=content_type)
+        response["Content-Disposition"] = f'inline; filename="{file_path.name}"'
         return response
 
 
@@ -51,7 +51,7 @@ def render_directory_listing(request, dir_path, url_path):
     items = []
     try:
         for item in sorted(dir_path.iterdir()):
-            if item.name.startswith('.'):
+            if item.name.startswith("."):
                 continue
             relative_path = item.relative_to(data_dir)
             if item.is_dir():
@@ -62,18 +62,18 @@ def render_directory_listing(request, dir_path, url_path):
         raise Http404("Permission denied")
 
     # Build parent link
-    parent_link = ''
+    parent_link = ""
     if url_path:
         parent_path = str(Path(url_path).parent)
-        if parent_path == '.':
+        if parent_path == ".":
             parent_link = '<li><a href="/">..</a></li>'
         else:
             parent_link = f'<li><a href="/{parent_path}/">..</a></li>'
 
-    current_path = f'/{url_path}' if url_path else '/'
-    items_html = '\n'.join(items)
+    current_path = f"/{url_path}" if url_path else "/"
+    items_html = "\n".join(items)
 
-    html = f'''<!DOCTYPE html>
+    html = f"""<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -96,6 +96,6 @@ def render_directory_listing(request, dir_path, url_path):
         {items_html}
     </ul>
 </body>
-</html>'''
+</html>"""
 
     return HttpResponse(html)

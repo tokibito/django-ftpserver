@@ -69,6 +69,7 @@ class MockHandler:
 
 class TestHandler(SignalEmitterMixin, MockHandler):
     """Test handler combining mixin with mock."""
+
     pass
 
 
@@ -285,6 +286,7 @@ class DjangoFTPHandlerTest(TestCase):
 
     def test_inherits_from_mixin_and_ftphandler(self):
         from pyftpdlib.handlers import FTPHandler
+
         self.assertTrue(issubclass(DjangoFTPHandler, SignalEmitterMixin))
         self.assertTrue(issubclass(DjangoFTPHandler, FTPHandler))
 
@@ -292,6 +294,7 @@ class DjangoFTPHandlerTest(TestCase):
         mro = DjangoFTPHandler.__mro__
         mixin_index = mro.index(SignalEmitterMixin)
         from pyftpdlib.handlers import FTPHandler
+
         ftphandler_index = mro.index(FTPHandler)
         self.assertLess(mixin_index, ftphandler_index)
 
@@ -302,6 +305,7 @@ class DjangoTLS_FTPHandlerTest(TestCase):
 
     def test_inherits_from_mixin_and_tls_ftphandler(self):
         from pyftpdlib.handlers import TLS_FTPHandler
+
         self.assertTrue(issubclass(DjangoTLS_FTPHandler, SignalEmitterMixin))
         self.assertTrue(issubclass(DjangoTLS_FTPHandler, TLS_FTPHandler))
 
@@ -309,5 +313,6 @@ class DjangoTLS_FTPHandlerTest(TestCase):
         mro = DjangoTLS_FTPHandler.__mro__
         mixin_index = mro.index(SignalEmitterMixin)
         from pyftpdlib.handlers import TLS_FTPHandler
+
         tls_ftphandler_index = mro.index(TLS_FTPHandler)
         self.assertLess(mixin_index, tls_ftphandler_index)

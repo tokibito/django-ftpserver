@@ -2,14 +2,13 @@
 
 from unittest import mock
 
-import pytest
-
 
 class TestNullDevice:
     """Tests for NullDevice class."""
 
     def _getTargetClass(self):
         from django_ftpserver.daemonizer import NullDevice
+
         return NullDevice
 
     def _makeOne(self):
@@ -40,6 +39,7 @@ class TestGetDaemonizeClass:
 
     def _callFUT(self):
         from django_ftpserver.daemonizer import get_daemonize_class
+
         return get_daemonize_class()
 
     def test_returns_posix_class_on_posix(self):
@@ -72,6 +72,7 @@ class TestBaseDaemonizeInternalMethods:
 
     def _getTargetClass(self):
         from django_ftpserver.daemonizer import NonPosixDaemonize
+
         return NonPosixDaemonize
 
     def _makeOne(self, **kwargs):
@@ -119,6 +120,7 @@ class TestNonPosixDaemonize:
 
     def _getTargetClass(self):
         from django_ftpserver.daemonizer import NonPosixDaemonize
+
         return NonPosixDaemonize
 
     def _makeOne(self, **kwargs):
@@ -128,9 +130,11 @@ class TestNonPosixDaemonize:
         """daemonize() should call all internal methods in order."""
         instance = self._makeOne()
 
-        with mock.patch.object(instance, "_change_directory") as mock_cd, \
-             mock.patch.object(instance, "_set_umask") as mock_umask, \
-             mock.patch.object(instance, "_redirect_streams") as mock_redirect:
+        with (
+            mock.patch.object(instance, "_change_directory") as mock_cd,
+            mock.patch.object(instance, "_set_umask") as mock_umask,
+            mock.patch.object(instance, "_redirect_streams") as mock_redirect,
+        ):
             instance.daemonize()
 
         mock_cd.assert_called_once()
@@ -150,9 +154,11 @@ class TestNonPosixDaemonize:
         original_stdout = sys.stdout
         original_stderr = sys.stderr
 
-        with mock.patch("sys.stdin", mock_stdin), \
-             mock.patch("sys.stdout", mock_stdout), \
-             mock.patch("sys.stderr", mock_stderr):
+        with (
+            mock.patch("sys.stdin", mock_stdin),
+            mock.patch("sys.stdout", mock_stdout),
+            mock.patch("sys.stderr", mock_stderr),
+        ):
             instance._redirect_streams()
             # Check inside the context that NullDevice was assigned
             assert isinstance(sys.stdout, NullDevice)
@@ -174,10 +180,12 @@ class TestNonPosixDaemonize:
         mock_stderr = mock.MagicMock()
         mock_file = mock.MagicMock()
 
-        with mock.patch("sys.stdin", mock_stdin), \
-             mock.patch("sys.stdout", mock_stdout), \
-             mock.patch("sys.stderr", mock_stderr), \
-             mock.patch("builtins.open", return_value=mock_file) as mock_open:
+        with (
+            mock.patch("sys.stdin", mock_stdin),
+            mock.patch("sys.stdout", mock_stdout),
+            mock.patch("sys.stderr", mock_stderr),
+            mock.patch("builtins.open", return_value=mock_file) as mock_open,
+        ):
             instance._redirect_streams()
 
         mock_open.assert_called_once_with("/tmp/out.log", "a", 1)
@@ -190,10 +198,12 @@ class TestNonPosixDaemonize:
         mock_stderr = mock.MagicMock()
         mock_file = mock.MagicMock()
 
-        with mock.patch("sys.stdin", mock_stdin), \
-             mock.patch("sys.stdout", mock_stdout), \
-             mock.patch("sys.stderr", mock_stderr), \
-             mock.patch("builtins.open", return_value=mock_file) as mock_open:
+        with (
+            mock.patch("sys.stdin", mock_stdin),
+            mock.patch("sys.stdout", mock_stdout),
+            mock.patch("sys.stderr", mock_stderr),
+            mock.patch("builtins.open", return_value=mock_file) as mock_open,
+        ):
             instance._redirect_streams()
 
         mock_open.assert_called_once_with("/tmp/err.log", "a", 1)
@@ -206,10 +216,12 @@ class TestNonPosixDaemonize:
         mock_stderr = mock.MagicMock()
         mock_file = mock.MagicMock()
 
-        with mock.patch("sys.stdin", mock_stdin), \
-             mock.patch("sys.stdout", mock_stdout), \
-             mock.patch("sys.stderr", mock_stderr), \
-             mock.patch("builtins.open", return_value=mock_file) as mock_open:
+        with (
+            mock.patch("sys.stdin", mock_stdin),
+            mock.patch("sys.stdout", mock_stdout),
+            mock.patch("sys.stderr", mock_stderr),
+            mock.patch("builtins.open", return_value=mock_file) as mock_open,
+        ):
             instance._redirect_streams()
 
         assert mock_open.call_count == 2
@@ -222,6 +234,7 @@ class TestPosixDaemonize:
 
     def _getTargetClass(self):
         from django_ftpserver.daemonizer import PosixDaemonize
+
         return PosixDaemonize
 
     def _makeOne(self, **kwargs):
@@ -231,10 +244,12 @@ class TestPosixDaemonize:
         """daemonize() should call internal methods in correct order."""
         instance = self._makeOne()
 
-        with mock.patch.object(instance, "_first_fork") as mock_first, \
-             mock.patch.object(instance, "_setup_session") as mock_setup, \
-             mock.patch.object(instance, "_second_fork") as mock_second, \
-             mock.patch.object(instance, "_redirect_streams") as mock_redirect:
+        with (
+            mock.patch.object(instance, "_first_fork") as mock_first,
+            mock.patch.object(instance, "_setup_session") as mock_setup,
+            mock.patch.object(instance, "_second_fork") as mock_second,
+            mock.patch.object(instance, "_redirect_streams") as mock_redirect,
+        ):
             instance.daemonize()
 
         mock_first.assert_called_once()
@@ -254,8 +269,10 @@ class TestPosixDaemonize:
         """_first_fork() in parent process (fork > 0) should call sys.exit(0)."""
         instance = self._makeOne()
 
-        with mock.patch("django_ftpserver.daemonizer.os.fork", return_value=123), \
-             mock.patch("sys.exit") as mock_exit:
+        with (
+            mock.patch("django_ftpserver.daemonizer.os.fork", return_value=123),
+            mock.patch("sys.exit") as mock_exit,
+        ):
             instance._first_fork()
 
         mock_exit.assert_called_once_with(0)
@@ -265,10 +282,14 @@ class TestPosixDaemonize:
         instance = self._makeOne()
         mock_stderr = mock.MagicMock()
 
-        with mock.patch("django_ftpserver.daemonizer.os.fork",
-                        side_effect=OSError(1, "fork failed")), \
-             mock.patch("sys.stderr", mock_stderr), \
-             mock.patch("sys.exit") as mock_exit:
+        with (
+            mock.patch(
+                "django_ftpserver.daemonizer.os.fork",
+                side_effect=OSError(1, "fork failed"),
+            ),
+            mock.patch("sys.stderr", mock_stderr),
+            mock.patch("sys.exit") as mock_exit,
+        ):
             instance._first_fork()
 
         mock_stderr.write.assert_called()
@@ -278,9 +299,11 @@ class TestPosixDaemonize:
         """_setup_session() should call setsid and internal methods."""
         instance = self._makeOne(home_dir="/test", umask=0o077)
 
-        with mock.patch("django_ftpserver.daemonizer.os.setsid") as mock_setsid, \
-             mock.patch("django_ftpserver.daemonizer.os.chdir") as mock_chdir, \
-             mock.patch("django_ftpserver.daemonizer.os.umask") as mock_umask:
+        with (
+            mock.patch("django_ftpserver.daemonizer.os.setsid") as mock_setsid,
+            mock.patch("django_ftpserver.daemonizer.os.chdir") as mock_chdir,
+            mock.patch("django_ftpserver.daemonizer.os.umask") as mock_umask,
+        ):
             instance._setup_session()
 
         mock_setsid.assert_called_once()
@@ -299,8 +322,10 @@ class TestPosixDaemonize:
         """_second_fork() in parent (fork > 0) should call os._exit(0)."""
         instance = self._makeOne()
 
-        with mock.patch("django_ftpserver.daemonizer.os.fork", return_value=456), \
-             mock.patch("os._exit") as mock_exit:
+        with (
+            mock.patch("django_ftpserver.daemonizer.os.fork", return_value=456),
+            mock.patch("os._exit") as mock_exit,
+        ):
             instance._second_fork()
 
         mock_exit.assert_called_once_with(0)
@@ -310,10 +335,14 @@ class TestPosixDaemonize:
         instance = self._makeOne()
         mock_stderr = mock.MagicMock()
 
-        with mock.patch("django_ftpserver.daemonizer.os.fork",
-                        side_effect=OSError(2, "fork failed")), \
-             mock.patch("sys.stderr", mock_stderr), \
-             mock.patch("os._exit") as mock_exit:
+        with (
+            mock.patch(
+                "django_ftpserver.daemonizer.os.fork",
+                side_effect=OSError(2, "fork failed"),
+            ),
+            mock.patch("sys.stderr", mock_stderr),
+            mock.patch("os._exit") as mock_exit,
+        ):
             instance._second_fork()
 
         mock_stderr.write.assert_called()
@@ -325,11 +354,13 @@ class TestPosixDaemonize:
         mock_file = mock.MagicMock()
         mock_file.fileno.return_value = 10
 
-        with mock.patch("builtins.open", return_value=mock_file) as mock_open, \
-             mock.patch("django_ftpserver.daemonizer.os.dup2") as mock_dup2, \
-             mock.patch("sys.stdin") as mock_stdin, \
-             mock.patch("sys.stdout") as mock_stdout, \
-             mock.patch("sys.stderr") as mock_stderr:
+        with (
+            mock.patch("builtins.open", return_value=mock_file) as mock_open,
+            mock.patch("django_ftpserver.daemonizer.os.dup2") as mock_dup2,
+            mock.patch("sys.stdin") as mock_stdin,
+            mock.patch("sys.stdout") as mock_stdout,
+            mock.patch("sys.stderr") as mock_stderr,
+        ):
             mock_stdin.fileno.return_value = 0
             mock_stdout.fileno.return_value = 1
             mock_stderr.fileno.return_value = 2
@@ -346,16 +377,17 @@ class TestPosixDaemonize:
 
     def test_redirect_streams_with_logs(self):
         """_redirect_streams() should use log files when specified."""
-        instance = self._makeOne(out_log="/var/log/out.log",
-                                  err_log="/var/log/err.log")
+        instance = self._makeOne(out_log="/var/log/out.log", err_log="/var/log/err.log")
         mock_file = mock.MagicMock()
         mock_file.fileno.return_value = 10
 
-        with mock.patch("builtins.open", return_value=mock_file) as mock_open, \
-             mock.patch("django_ftpserver.daemonizer.os.dup2"), \
-             mock.patch("sys.stdin") as mock_stdin, \
-             mock.patch("sys.stdout") as mock_stdout, \
-             mock.patch("sys.stderr") as mock_stderr:
+        with (
+            mock.patch("builtins.open", return_value=mock_file) as mock_open,
+            mock.patch("django_ftpserver.daemonizer.os.dup2"),
+            mock.patch("sys.stdin") as mock_stdin,
+            mock.patch("sys.stdout") as mock_stdout,
+            mock.patch("sys.stderr") as mock_stderr,
+        ):
             mock_stdin.fileno.return_value = 0
             mock_stdout.fileno.return_value = 1
             mock_stderr.fileno.return_value = 2
@@ -372,6 +404,7 @@ class TestBecomeDaemon:
 
     def _callFUT(self, **kwargs):
         from django_ftpserver.daemonizer import become_daemon
+
         return become_daemon(**kwargs)
 
     def test_become_daemon_uses_correct_class(self):
@@ -379,8 +412,10 @@ class TestBecomeDaemon:
         mock_daemon_instance = mock.MagicMock()
         mock_daemon_class = mock.MagicMock(return_value=mock_daemon_instance)
 
-        with mock.patch("django_ftpserver.daemonizer.get_daemonize_class",
-                        return_value=mock_daemon_class):
+        with mock.patch(
+            "django_ftpserver.daemonizer.get_daemonize_class",
+            return_value=mock_daemon_class,
+        ):
             self._callFUT()
 
         mock_daemon_class.assert_called_once()
@@ -391,20 +426,22 @@ class TestBecomeDaemon:
         mock_daemon_instance = mock.MagicMock()
         mock_daemon_class = mock.MagicMock(return_value=mock_daemon_instance)
 
-        with mock.patch("django_ftpserver.daemonizer.get_daemonize_class",
-                        return_value=mock_daemon_class):
+        with mock.patch(
+            "django_ftpserver.daemonizer.get_daemonize_class",
+            return_value=mock_daemon_class,
+        ):
             self._callFUT(
                 our_home_dir="/home/test",
                 out_log="/var/log/out.log",
                 err_log="/var/log/err.log",
-                umask=0o077
+                umask=0o077,
             )
 
         mock_daemon_class.assert_called_once_with(
             home_dir="/home/test",
             out_log="/var/log/out.log",
             err_log="/var/log/err.log",
-            umask=0o077
+            umask=0o077,
         )
 
     def test_become_daemon_default_arguments(self):
@@ -412,13 +449,12 @@ class TestBecomeDaemon:
         mock_daemon_instance = mock.MagicMock()
         mock_daemon_class = mock.MagicMock(return_value=mock_daemon_instance)
 
-        with mock.patch("django_ftpserver.daemonizer.get_daemonize_class",
-                        return_value=mock_daemon_class):
+        with mock.patch(
+            "django_ftpserver.daemonizer.get_daemonize_class",
+            return_value=mock_daemon_class,
+        ):
             self._callFUT()
 
         mock_daemon_class.assert_called_once_with(
-            home_dir=".",
-            out_log=None,
-            err_log=None,
-            umask=0o022
+            home_dir=".", out_log=None, err_log=None, umask=0o022
         )

@@ -10,24 +10,29 @@ from django.core.files.storage import storages
 logger = logging.getLogger(__name__)
 
 PseudoStat = namedtuple(
-    'PseudoStat',
+    "PseudoStat",
     [
-        'st_size', 'st_mtime', 'st_nlink', 'st_mode', 'st_uid', 'st_gid',
-        'st_dev', 'st_ino'
-    ])
+        "st_size",
+        "st_mtime",
+        "st_nlink",
+        "st_mode",
+        "st_uid",
+        "st_gid",
+        "st_dev",
+        "st_ino",
+    ],
+)
 
 
 class StoragePatch:
-    """Base class for patches to StorageFS.
-    """
+    """Base class for patches to StorageFS."""
+
     patch_methods = ()
 
     @classmethod
     def apply(cls, fs):
-        """replace bound methods of fs.
-        """
-        logger.debug(
-            'Patching %s with %s.', fs.__class__.__name__, cls.__name__)
+        """replace bound methods of fs."""
+        logger.debug("Patching %s with %s.", fs.__class__.__name__, cls.__name__)
         fs._patch = cls
         for method_name in cls.patch_methods:
             # if fs hasn't method, raise AttributeError.
@@ -35,14 +40,16 @@ class StoragePatch:
             method = getattr(cls, method_name)
             bound_method = method.__get__(fs, fs.__class__)
             setattr(fs, method_name, bound_method)
-            setattr(fs, '_origin_' + method_name, origin)
+            setattr(fs, "_origin_" + method_name, origin)
 
 
 class FileSystemStoragePatch(StoragePatch):
-    """StoragePatch for Django's FileSystemStorage.
-    """
+    """StoragePatch for Django's FileSystemStorage."""
+
     patch_methods = (
-        'mkdir', 'rmdir', 'stat',
+        "mkdir",
+        "rmdir",
+        "stat",
     )
 
     def mkdir(self, path):
@@ -56,16 +63,17 @@ class FileSystemStoragePatch(StoragePatch):
 
 
 class S3Boto3StoragePatch(StoragePatch):
-    """StoragePatch for S3Boto3Storage(provided by django-storages).
-    """
+    """StoragePatch for S3Boto3Storage(provided by django-storages)."""
+
     patch_methods = (
-        '_exists', 'isdir', 'getmtime',
+        "_exists",
+        "isdir",
+        "getmtime",
     )
 
     def _exists(self, path):
-        """S3 directory is not S3Ojbect.
-        """
-        if path.endswith('/'):
+        """S3 directory is not S3Ojbect."""
+        if path.endswith("/"):
             return True
         return self.storage.exists(path)
 
@@ -79,16 +87,18 @@ class S3Boto3StoragePatch(StoragePatch):
 
 
 class DjangoGCloudStoragePatch(StoragePatch):
-    """StoragePatch for DjangoGCloudStorage(provided by django-gcloud-storage).
-    """
+    """StoragePatch for DjangoGCloudStorage(provided by django-gcloud-storage)."""
+
     patch_methods = (
-        '_exists', 'isdir', 'getmtime', 'listdir',
+        "_exists",
+        "isdir",
+        "getmtime",
+        "listdir",
     )
 
     def _exists(self, path):
-        """GCS directory is not blob.
-        """
-        if path.endswith('/'):
+        """GCS directory is not blob."""
+        if path.endswith("/"):
             return True
         return self.storage.exists(path)
 
@@ -101,24 +111,23 @@ class DjangoGCloudStoragePatch(StoragePatch):
         return self._origin_getmtime(path)
 
     def listdir(self, path):
-        if not path.endswith('/'):
-            path += '/'
+        if not path.endswith("/"):
+            path += "/"
         return self._origin_listdir(path)
 
 
 class StorageFS(AbstractedFS):
-    """FileSystem for bridge to Django storage.
-    """
+    """FileSystem for bridge to Django storage."""
+
     storage_class = None
     patches = {
-        'FileSystemStorage': FileSystemStoragePatch,
-        'S3Boto3Storage': S3Boto3StoragePatch,
-        'DjangoGCloudStorage': DjangoGCloudStoragePatch,
+        "FileSystemStorage": FileSystemStoragePatch,
+        "S3Boto3Storage": S3Boto3StoragePatch,
+        "DjangoGCloudStorage": DjangoGCloudStoragePatch,
     }
 
     def apply_patch(self):
-        """apply adjustment patch for storage
-        """
+        """apply adjustment patch for storage"""
         patch = self.patches.get(self.storage.__class__.__name__)
         if patch:
             patch.apply(self)
@@ -137,7 +146,7 @@ class StorageFS(AbstractedFS):
         path = os.path.join(self._cwd, filename)
         return self.storage.open(path, mode)
 
-    def mkstemp(self, suffix='', prefix='', dir=None, mode='wb'):
+    def mkstemp(self, suffix="", prefix="", dir=None, mode="wb"):
         raise NotImplementedError
 
     def chdir(self, path):
@@ -149,11 +158,12 @@ class StorageFS(AbstractedFS):
 
     def listdir(self, path):
         assert isinstance(path, str), path
-        if path == '/':
-            path = ''
+        if path == "/":
+            path = ""
         directories, files = self.storage.listdir(path)
-        return ([name + '/' for name in directories if name]
-                + [name for name in files if name])
+        return [name + "/" for name in directories if name] + [
+            name for name in files if name
+        ]
 
     def rmdir(self, path):
         raise NotImplementedError
@@ -185,22 +195,22 @@ class StorageFS(AbstractedFS):
     lstat = stat
 
     def _exists(self, path):
-        if path == '/':
+        if path == "/":
             return self.storage.exists("")
         return self.storage.exists(path)
 
     def isfile(self, path):
-        return self._exists(path) and not path.endswith('/')
+        return self._exists(path) and not path.endswith("/")
 
     def islink(self, path):
         return False
 
     def isdir(self, path):
-        if path == '':
+        if path == "":
             return True
-        elif path.endswith('/'):
+        elif path.endswith("/"):
             return self._exists(path)
-        return self._exists(path + '/')
+        return self._exists(path + "/")
 
     def getsize(self, path):
         if self.isdir(path):

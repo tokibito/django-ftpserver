@@ -9,15 +9,17 @@ from django.utils.translation import gettext_lazy as _
 
 class FTPUserGroup(models.Model):
     name = models.CharField(
-        _("Group name"), max_length=30, null=False, blank=False, unique=True)
+        _("Group name"), max_length=30, null=False, blank=False, unique=True
+    )
     permission = models.CharField(
-        _("Permission"), max_length=8, null=False, blank=False,
-        default='elradfmw')
+        _("Permission"), max_length=8, null=False, blank=False, default="elradfmw"
+    )
     home_dir = models.CharField(
-        _("Home directory"), max_length=1024, null=True, blank=True)
+        _("Home directory"), max_length=1024, null=True, blank=True
+    )
 
     def __str__(self):
-        return u"{0}".format(self.name)
+        return "{0}".format(self.name)
 
     class Meta:
         verbose_name = _("FTP user group")
@@ -26,22 +28,26 @@ class FTPUserGroup(models.Model):
 
 class FTPUserAccount(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"),
-        on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.CASCADE
+    )
     group = models.ForeignKey(
-        FTPUserGroup, verbose_name=_("FTP user group"), null=False,
-        blank=False, on_delete=models.CASCADE)
-    last_login = models.DateTimeField(
-        _("Last login"), editable=False, null=True)
+        FTPUserGroup,
+        verbose_name=_("FTP user group"),
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+    last_login = models.DateTimeField(_("Last login"), editable=False, null=True)
     home_dir = models.CharField(
-        _("Home directory"), max_length=1024, null=True, blank=True)
+        _("Home directory"), max_length=1024, null=True, blank=True
+    )
 
     def __str__(self):
         try:
             user = self.user
         except ObjectDoesNotExist:
             user = None
-        return u"{0}".format(user)
+        return "{0}".format(user)
 
     def get_username(self):
         try:
@@ -60,7 +66,8 @@ class FTPUserAccount(models.Model):
             directory = self.group.home_dir
         else:
             directory = os.path.join(
-                os.path.dirname(os.path.expanduser('~')), u'{username}')
+                os.path.dirname(os.path.expanduser("~")), "{username}"
+            )
         return directory.format(username=self.get_username())
 
     def has_perm(self, perm, path):
