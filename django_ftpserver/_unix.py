@@ -1,8 +1,13 @@
+from django.core import exceptions
+
 try:
     import os
     import pwd
 except ImportError:
-    pass
+    raise exceptions.ImproperlyConfigured(
+        "It can't setup the personate user class. "
+        "If your platform is Unix, please ensure pwd module is available."
+    )
 else:
 
     class UnixPersonateUser(object):
