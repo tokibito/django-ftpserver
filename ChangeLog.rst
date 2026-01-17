@@ -7,6 +7,9 @@ Change History
 :release-date: 2026-01-17
 
 * Added Django 6.0 support
+* Added Django signals for FTP events (login, logout, file transfer, file operations)
+* Added DjangoFTPHandler and DjangoTLS_FTPHandler with signal support
+* Added DEBUG level logging for all FTP events
 
 0.10.0
 ======
