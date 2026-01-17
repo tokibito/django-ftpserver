@@ -27,7 +27,7 @@ dependencies = [
 [project.optional-dependencies]
 develop = [
     "pytest",
-    "flake8",
+    "ruff",
     "pytest-django",
     "tox",
     "wheel",
@@ -43,3 +43,9 @@ packages = ["django_ftpserver"]
 django_find_project = false
 pythonpath = ["tests/django_project"]
 DJANGO_SETTINGS_MODULE = "project.settings"
+
+[tool.ruff]
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
