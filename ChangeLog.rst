@@ -4,7 +4,7 @@ Change History
 
 1.0.0
 =====
-:release-date: 2026-01-17
+:release-date: under development
 
 * Added management commands for listing and deleting FTP user groups and accounts
   (listftpusergroup, deleteftpusergroup, listftpuseraccount, deleteftpuseraccount)
