@@ -10,6 +10,18 @@ A ready-to-run example Django project demonstrating django-ftpserver.
 
 ## Setup
 
+### For Users
+
+```bash
+cd example
+python3 -m venv venv
+venv/bin/pip install -r requirements.txt
+```
+
+### For Developers
+
+If you cloned the repository and want to test local changes:
+
 ```bash
 cd example
 python3 -m venv venv
