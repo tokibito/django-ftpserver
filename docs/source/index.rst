@@ -2,7 +2,7 @@
 Django FTP server
 =================
 
-|build-status| |pypi| |docs|
+|build-status| |pypi| |python-versions| |docs|
 
 FTP server application that used user authentication of Django.
 
@@ -33,3 +33,5 @@ Indices and tables
    :target: https://readthedocs.org/projects/django-ftpserver/
 .. |pypi| image:: https://badge.fury.io/py/django-ftpserver.svg
    :target: http://badge.fury.io/py/django-ftpserver
+.. |python-versions| image:: https://img.shields.io/pypi/pyversions/django-ftpserver.svg
+   :target: https://pypi.org/project/django-ftpserver/
