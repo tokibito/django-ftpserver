@@ -1,20 +1,15 @@
-import logging
 import os
 import sys
 
 import pyftpdlib
-from pyftpdlib.servers import FTPServer
 
 from django import get_version
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from django_ftpserver import signals
 from django_ftpserver import utils
 from django_ftpserver.daemonizer import become_daemon
-
-
-logger = logging.getLogger(__name__)
+from django_ftpserver.server import FTPServerConfig, FTPServerRunner
 
 
 class Command(BaseCommand):
@@ -70,26 +65,6 @@ class Command(BaseCommand):
             "--sendfile", action="store_true", dest="sendfile", help="Use sendfile."
         )
 
-    def make_server(
-        self,
-        server_class,
-        handler_class,
-        authorizer_class,
-        filesystem_class,
-        host_port,
-        file_access_user=None,
-        **handler_options,
-    ):
-        return utils.make_server(
-            server_class,
-            handler_class,
-            authorizer_class,
-            filesystem_class,
-            host_port,
-            file_access_user=file_access_user,
-            **handler_options,
-        )
-
     def _get_option(self, options, option_name, setting_name):
         """Get option value from command line or settings with default fallback."""
         return options.get(option_name) or utils.get_ftp_setting(setting_name)
@@ -140,14 +115,13 @@ class Command(BaseCommand):
             daemonize_options = utils.get_ftp_setting("FTPSERVER_DAEMONIZE_OPTIONS")
             become_daemon(**daemonize_options)
 
-    def _write_pidfile(self, options):
-        """Write PID to file if pidfile option is set."""
-        pidfile = self._get_option(options, "pidfile", "FTPSERVER_PIDFILE")
-        if pidfile:
-            with open(pidfile, "w") as f:
-                f.write(str(os.getpid()))
+    def _write_pidfile(self, pidfile):
+        """Write PID to file."""
+        with open(pidfile, "w") as f:
+            f.write(str(os.getpid()))
 
-    def handle(self, *args, **options):
+    def _build_config(self, options) -> FTPServerConfig:
+        """Build FTPServerConfig from command options."""
         host, port = self._parse_host_port(options)
         passive_ports = self._parse_passive_ports(options)
 
@@ -162,32 +136,30 @@ class Command(BaseCommand):
         keyfile = self._get_option(options, "keyfile", "FTPSERVER_KEYFILE")
         sendfile = self._get_option(options, "sendfile", "FTPSERVER_SENDFILE")
 
-        self._setup_daemon(options)
-        self._write_pidfile(options)
-
         handler_class, handler_options = self._get_handler_class_and_options(
             certfile, keyfile
         )
         authorizer_class = utils.get_ftp_setting("FTPSERVER_AUTHORIZER")
         filesystem_class = utils.get_ftp_setting("FTPSERVER_FILESYSTEM")
 
-        server = self.make_server(
-            server_class=FTPServer,
-            handler_class=handler_class,
-            authorizer_class=authorizer_class,
-            filesystem_class=filesystem_class,
-            host_port=(host, port),
-            file_access_user=file_access_user,
+        return FTPServerConfig(
+            host=host,
+            port=port,
             timeout=timeout,
             passive_ports=passive_ports,
             masquerade_address=masquerade_address,
+            file_access_user=file_access_user,
             certfile=certfile,
             keyfile=keyfile,
             sendfile=sendfile,
-            **handler_options,
+            handler_class=handler_class,
+            authorizer_class=authorizer_class,
+            filesystem_class=filesystem_class,
+            handler_options=handler_options,
         )
 
-        # start server
+    def _print_startup_message(self, host, port):
+        """Print server startup message."""
         quit_command = "CTRL-BREAK" if sys.platform == "win32" else "CONTROL-C"
         sys.stdout.write(
             (
@@ -202,20 +174,20 @@ class Command(BaseCommand):
             )
         )
 
-        logger.debug("FTP server starting: host=%s, port=%s", host, port)
-        signals.ftp_server_started.send(
-            sender=self.__class__,
-            server=server,
-            host=host,
-            port=port,
-        )
-        try:
-            server.serve_forever()
-        finally:
-            logger.debug("FTP server stopping: host=%s, port=%s", host, port)
-            signals.ftp_server_stopped.send(
-                sender=self.__class__,
-                server=server,
-                host=host,
-                port=port,
-            )
+    def handle(self, *args, **options):
+        # Setup daemon mode if requested (before server creation)
+        self._setup_daemon(options)
+
+        # Write PID file if requested
+        pidfile = self._get_option(options, "pidfile", "FTPSERVER_PIDFILE")
+        if pidfile:
+            self._write_pidfile(pidfile)
+
+        # Build configuration and create server
+        config = self._build_config(options)
+        runner = FTPServerRunner(config)
+        runner.create_server()
+
+        # Print startup message and run server
+        self._print_startup_message(config.host, config.port)
+        runner.run(sender=self.__class__)

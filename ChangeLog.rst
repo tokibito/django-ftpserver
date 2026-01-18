@@ -16,6 +16,8 @@ Change History
 * Fixed "MySQL server has gone away" error in long-running FTP server processes
 * Added support for django-storages 1.14+ (S3Storage, GoogleCloudStorage)
 * Changed FTPUserAccount.user field to use raw_id_fields in admin
+* Added FTPServerConfig and FTPServerRunner classes for programmatic server control
+  (separated server logic from management command)
 
 0.10.0
 ======
