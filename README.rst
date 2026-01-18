@@ -4,7 +4,7 @@ Django FTP server
 
 |build-status| |pypi| |python-version| |docs|
 
-FTP server application that used user authentication of Django.
+FTP server application that uses Django's user authentication.
 
 Features
 ========
@@ -26,7 +26,7 @@ Features
 Getting Started
 ===============
 
-1.  Install django-ftpserver by pip.
+1.  Install django-ftpserver using pip.
 
 ::
 
@@ -45,7 +45,7 @@ Optional dependencies can be installed with extras:
    # Multiple extras
    $ pip install django-ftpserver[tls,windows]
 
-2. Add line to settings.INSTALLED_APPS for your django project.
+2. Add a line to settings.INSTALLED_APPS in your Django project.
 
 ::
 
@@ -54,7 +54,7 @@ Optional dependencies can be installed with extras:
        'django_ftpserver',
    )
 
-3. Migrate app.
+3. Run migrations.
 
 ::
 
