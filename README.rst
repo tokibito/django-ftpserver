@@ -86,7 +86,7 @@ Requirements
 ============
 
 * Target Python version is 3.10, 3.11, 3.12, 3.13, 3.14
-* Django>=4.2
+* Django>=5.2
 * pyftpdlib
 
 Optional Dependencies
