@@ -2,6 +2,12 @@
 Change History
 ==============
 
+1.1.0
+=====
+:release-date: 2026-08-08
+
+* Added Django 6.1 support
+
 1.0.0
 =====
 :release-date: 2026-01-18
