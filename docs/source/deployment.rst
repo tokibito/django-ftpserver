@@ -244,7 +244,7 @@ Set ``CONN_MAX_AGE`` to limit the maximum lifetime of a database connection. Thi
        }
    }
 
-**CONN_HEALTH_CHECKS** (Django 4.1+)
+**CONN_HEALTH_CHECKS**
 
 Enable connection health checks to verify connections are still usable before reusing them::
 
