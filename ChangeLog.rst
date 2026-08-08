@@ -8,6 +8,7 @@ Change History
 
 * Added Django 6.1 support
 * Removed Django 4.2, 5.0, 5.1 support
+* Removed Python 3.10 support (EOL 2026-10-31)
 
 1.0.0
 =====
